@@ -16,7 +16,7 @@ class Activity extends Model
     public static function feed($user, $take = 50)
     {
 
-        return static::where('user_id', $user->id)
+        $query = static::where('user_id', $user->id)
         	->latest()
         	->with('subject')
         	->take($take)
@@ -24,6 +24,8 @@ class Activity extends Model
         	->groupBy(function($activity) {
 
 	            return $activity->created_at->format('Y-m-d');
-        });    	
+        });  
+
+        return $query;  	
     }
 }
