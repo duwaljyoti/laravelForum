@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ParticapateinForumTest extends TestCase
+class ParticipateinForumTest extends TestCase
 {
 	use DatabaseMigrations;
 
@@ -45,5 +45,39 @@ class ParticapateinForumTest extends TestCase
         $this->post($thread->path() . '/replies', $reply->toArray())
             ->assertSessionHasErrors('body');
 
+    }
+
+    // public function testAReplyCanBeDeleted()
+    // {
+    //     $this->signIn();
+    //     $reply = create('App\Reply');
+
+    //     $this->json('DELETE', "/replies/{$reply->id}/delete");
+
+    //     $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+    // }    
+
+    public function testAnUnaAuthenticatedUserMayNotDeleteReply()
+    {
+
+        $this->withExceptionHandling();
+
+        $reply = create('App\Reply');
+
+        $this->delete("/replies/{$reply->id}")
+            ->assertRedirect('login');
+
+        $this->signIn()
+            ->delete("/replies/{$reply->id}")
+            ->assertStatus(403);
+    }
+
+    public function testAnAuthenticatedUserCanDeleteReply()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $this->delete("/replies/{$reply->id}")
+            ->assertStatus(302);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
     }
 }

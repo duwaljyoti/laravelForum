@@ -17,8 +17,20 @@
      	</div>
 
      </div>
-        <div class="panel-body">
+      <div class="panel-body">
             {{ $reply->body }}
             <hr>
      </div>
+     @can ('update', $reply)
+	     <div class="panel-footer level">
+	     	<button class='btn-xs mr-1'>Edit</button>
+			<form method='post' action="/replies/{{ $reply->id }}">
+				{{ method_field('DELETE') }}
+				{{ csrf_field() }}
+				<button class='btn btn-default btn-xs btn-danger'>
+					Delete
+				</button>
+			</form>	   
+		</div>
+	@endcan			  
 </div>
