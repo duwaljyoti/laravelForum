@@ -47,16 +47,6 @@ class ParticipateinForumTest extends TestCase
 
     }
 
-    // public function testAReplyCanBeDeleted()
-    // {
-    //     $this->signIn();
-    //     $reply = create('App\Reply');
-
-    //     $this->json('DELETE', "/replies/{$reply->id}/delete");
-
-    //     $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
-    // }    
-
     public function testAnUnaAuthenticatedUserMayNotDeleteReply()
     {
 
@@ -80,4 +70,27 @@ class ParticipateinForumTest extends TestCase
             ->assertStatus(302);
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
     }
+
+    public function testAnUnAuthenticatedUserMayNotEditReply()
+    {
+        $this->withExceptionHandling();
+        $reply = create('App\Reply');
+        $this->patch("/replies/{$reply->id}")
+            ->assertRedirect('login');
+
+        $this->signIn();
+
+        $this->patch("/replies/{$reply->id}")
+            ->assertStatus(403);
+    } 
+
+    public function testAnAuthenticatedUserMayEditReply()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $updatedReply = 'Just an example of an updated reply!!';
+        $this->patch("/replies/{$reply->id}", ['body' => $updatedReply])
+            ->assertStatus(200);
+        $this->assertDatabaseHas('replies', ['id' => $reply->id, 'body' => $updatedReply]);
+    }     
 }
