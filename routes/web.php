@@ -40,6 +40,8 @@ Route::get('/threads/{channel}', 'ThreadController@index');
 
 Route::post('/replies/{reply}/favourite', 'FavouriteController@store');
 
+Route::delete('/replies/{reply}/favourite', 'FavouriteController@destroy');
+
 Route::delete('/replies/{reply}', 'ReplyController@destroy');
 
 Route::patch('/replies/{reply}', 'ReplyController@update');
@@ -47,4 +49,6 @@ Route::patch('/replies/{reply}', 'ReplyController@update');
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
 
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
+
+// Route::get('/reply')
 

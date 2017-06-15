@@ -34,7 +34,7 @@ class ParticipateinForumTest extends TestCase
         $this->get($thread->path())
             ->assertSee($reply->body);
     }
-    public function testAThreadSHouldContainABody()
+    public function testAThreadShouldContainABody()
     {
         $this->withExceptionHandling()->signIn();
 

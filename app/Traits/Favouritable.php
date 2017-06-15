@@ -28,8 +28,20 @@ trait Favouritable
         return (!! $this->favourites->where('user_id', auth()->id())->count());
     }
 
+    public function getIsFavouritedAttribute()
+    {
+        return $this->isFavourited();
+    }
+
     public function getFavouritesCountAttribute()
     {
         return $this->favourites->count();
-    }	
+    }
+
+    public function unfavourite()	
+    {
+        $attributes = ['user_id' => auth()->id()];
+
+        return $this->favourites()->where($attributes)->delete();
+    }
 }

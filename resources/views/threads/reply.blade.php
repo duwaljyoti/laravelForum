@@ -7,13 +7,7 @@
 			     	 said {{ $reply->created_at->diffForHumans() }}
 			    </h5>
 			    <div>
-					<form method='post' action="/replies/{{ $reply->id }}/favourite">
-						{{ csrf_field() }}
-						<button type='submit' class='btn btn-default' {{ $reply->isFavourited() ? 'disabled' : '' }}>
-							{{ $reply->favourites_count }}
-							Like
-						</button>					
-					</form>
+			    	<favourite :reply="{{ $reply }}"></favourite>
 			    </div> 		
 	     	</div>
 
@@ -33,7 +27,7 @@
 	     @can ('update', $reply)
 		     <div class="panel-footer level">
 		     	<button class='btn-xs mr-1' @click='editing = true'>Edit</button>
-		     	<button class='btn btn-default btn-xs btn-danger' @click='destroy'>Destroy</button>
+		     	<button class='btn btn-default btn-xs btn-danger' @click='destroy'>Delete</button>
 			</div>
 		@endcan			  
 	</div>

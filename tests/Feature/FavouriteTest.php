@@ -42,4 +42,23 @@ class FavouriteTest extends TestCase
 
         $this->assertCount(1, $reply->favourites);
     }
+
+    public function testAnAuthorisedUserMayAlsoUnFavouritePost()
+    {
+        $this->signIn();
+
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+
+        $reply->favourite();
+
+        $this->delete('/replies/' . $reply->id . '/favourite');
+        $this->assertCount(0, $reply->fresh()->favourites);
+
+        $this->assertDatabaseMissing('favourites', [
+            'favourited_id' => $reply->id,
+            'user_id' => auth()->id(),
+            'favourited_type' => 'App\Reply'
+        ]);
+    }
+
 }
