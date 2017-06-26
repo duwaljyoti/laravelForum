@@ -11,7 +11,7 @@
 				</div>
 
 		        <div class="panel-body">
-	        		@foreach($activities as $date => $records)
+	        		@forelse($activities as $date => $records)
 	        			<div class="h3 page-header">
 	        				{{ $date }}
 	        			</div>
@@ -20,7 +20,9 @@
 		            			@include("profiles.partials.{$record->type}", ['activity' => $record])
 	        				@endif
 	        			@endforeach
-	        		@endforeach
+	        		@empty
+	        			No Activities recorded for this User.	
+	        		@endforelse
 		        </div>				
 			</div>
 		</div>

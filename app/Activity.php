@@ -19,13 +19,15 @@ class Activity extends Model
         $query = static::where('user_id', $user->id)
         	->latest()
         	->with('subject')
-        	->take($take)
-        	->get()
+        	->take($take);
+
+        $feed = $query->get()
         	->groupBy(function($activity) {
 
 	            return $activity->created_at->format('Y-m-d');
         });  
 
-        return $query;  	
+
+        return $feed;  	
     }
 }

@@ -7,10 +7,11 @@ use App\User;
 use App\Thread;
 use App\Favourite;
 use App\Traits\Favouritable;
+use App\Traits\RecordActivity;
 
 class Reply extends Model
 {
-    use Favouritable, Traits\RecordActivity;
+    use Favouritable, RecordActivity;
 
     protected $guarded = [];
 

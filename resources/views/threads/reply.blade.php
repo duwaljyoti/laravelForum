@@ -6,9 +6,11 @@
 			     	<a href = "{{ route('profile', $reply->owner) }}">{{ $reply->owner->name }}</a>
 			     	 said {{ $reply->created_at->diffForHumans() }}
 			    </h5>
-			    <div>
-			    	<favourite :reply="{{ $reply }}"></favourite>
-			    </div> 		
+			    @if(Auth::check())
+				    <div>
+				    	<favourite :reply="{{ $reply }}"></favourite>
+				    </div> 	
+				@endif    	
 	     	</div>
 
 	     </div>
