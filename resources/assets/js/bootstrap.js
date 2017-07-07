@@ -23,9 +23,15 @@ window.axios = require('axios');
 
 window.Vue = require('vue');
 
-window.axios.defaults.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
+window.axios.defaults.headers.common['X-CSRF-TOKEN'] = window.App.csrfToken;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+
+Vue.prototype.authorize = function(handler) {
+  let user = window.App.loggedUser;
+  
+  return user ? handler(user) : false;
+}
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

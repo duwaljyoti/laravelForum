@@ -1,17 +1,60 @@
+<template>
+	<div :id = "'reply-' + id" class="panel panel-default">
+	     <div class="panel-heading">
+	     	<div class="level">
+		     	<h5 class="flex">
+			     	<a :href = "'/profile/' + data.owner.name" v-text="data.owner.name"></a>
+			     	 said {{ data.created_at }}
+			    </h5>
+			    <div v-if='signedIn'>
+			    	<favourite :reply="data"></favourite>
+			    </div> 	
+	     	</div>
+
+	     </div>
+	      <div class="panel-body">
+	      	<div v-if='editing'>
+		      	<div class="form-group">
+					<textarea class = 'form-control' v-model='reply'>
+					</textarea>
+				</div>	
+				<button class='btn btn-primary btn-xs' @click='update'>Update</button>
+				<button class='btn btn-xs' @click='editing = false'>Cancel</button>
+	      	</div>
+
+	      	<div v-else v-text='reply'></div>    
+	     </div>
+	     <div class="panel-footer level" v-if='canUpdate'>
+	     	<button class='btn-xs mr-1' @click='editing = true'>Edit</button>
+	     	<button class='btn btn-default btn-xs btn-danger' @click='destroy'>Delete</button>
+		</div>
+	</div>
+</template>
+
+
 <script>
 	import Favourite from './Favourite.vue'
 	export default {
-		props: ['attribute'],
+		props: ['data'],
 		components: { Favourite },
 		data() {
 			return {
 				editing: false,
-				reply: this.attribute.body
+				reply: this.data.body,
+				id: this.data.id
+			}
+		},
+		computed: {
+			signedIn: function() {
+				return window.App.signedIn
+			},
+			canUpdate: function() {
+				return this.authorize(user =>  this.data.user_id == user.id)
 			}
 		},
 		methods: {
 			update(newReply) {
-				axios.patch('/replies/' + this.attribute.id,
+				axios.patch('/replies/' + this.data.id,
 					 { body: this.reply })
 					.then((response) => {
 						if(response.status == 200) {
@@ -24,12 +67,10 @@
 					})
 			},
 			destroy() {
-				axios.delete("/replies/" + this.attribute.id)
+				axios.delete("/replies/" + this.data.id)
 					.then((response) => {
 						if(response.status == 200) {
-							$(this.$el).fadeOut(300, () => {
-								flash('Your reply has been deleted');
-							});
+							this.$emit('deleted')
 						}
 					})
 					.catch((error) => {
