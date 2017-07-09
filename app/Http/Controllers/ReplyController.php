@@ -20,10 +20,14 @@ class ReplyController extends Controller
             'body' => 'required'
         ]);
 
-    	$thread->addReply([
+    	$reply = $thread->addReply([
     		'body' => request('body'),
     		'user_id' => auth()->id(),
     	]);
+
+        if(request()->expectsJson()) {
+            return $reply->load('owner');
+        }
 
 
     	return back()
@@ -32,10 +36,6 @@ class ReplyController extends Controller
 
     public function destroy(Reply $reply)
     {
-        // if(auth()->id() != $reply->user_id) {
-
-        //     return response([], 403);
-        // }
 
         $this->authorize('update', $reply);
 

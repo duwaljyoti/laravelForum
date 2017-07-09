@@ -1,8 +1,9 @@
 <script>
 	import Replies from '../components/Replies.vue'
+	import NewReply from '../components/NewReply.vue'
 
 	export default {
-		components: { Replies },
+		components: { Replies, NewReply },
 
 		props: ['repliesCounter'],
 
@@ -14,6 +15,11 @@
 
 		mounted() {
 			// console.log(this.repliesCounter)
+		},
+		methods: {
+			aNewFunction() {
+				console.log('testing one more time');
+			}
 		}
 	}
 </script>

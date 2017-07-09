@@ -34,22 +34,9 @@
 
                     <replies 
                         :data="{{ $thread->replies }}"
+                        @reply-created="replyCount++"
                         @removed="replyCount--"
-                        ></replies>
-
-                    {{ $replies->links() }}
-
-                    @if(auth()->check())
-                        {!! Form::open(['method' => 'post', 'url' => $thread->path() . '/replies']) !!}
-                        {{-- {!! Form::token() !!} --}}
-                            <div class="form-group">
-                                <textarea rows = '5' name = 'body' class = 'form-control' placeholder = 'This sounds more appropriate!!'></textarea>
-                            </div>
-                            <button type="submit" class = 'btn btn-default'>Submit</button>
-                        {!! Form::close() !!}
-                    @else
-                        <p class='text-center'><a href = '{{ route('login') }}'>Please sign</a> in to participate</p>
-                    @endif             
+                    ></replies>
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
