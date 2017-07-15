@@ -78,7 +78,7 @@ class ThreadController extends Controller
         ]);
 
         return redirect($thread->path())
-            ->with('flash', 'Thread Created.');
+            ->with('flash', 'Thread Created here.');
     }
 
     /**
@@ -89,7 +89,6 @@ class ThreadController extends Controller
      */
     public function show($channel, Thread $thread)
     {
-        // return $thread;
 
         return view('threads.show', compact('thread'));
     }

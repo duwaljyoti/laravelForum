@@ -36,6 +36,10 @@ Route::get('/threads/{channel}/{thread}', 'ThreadController@show');
 
 Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store');
 
+Route::post('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionController@subscribe')->middleware('auth');
+
+Route::delete('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionController@destroy')->middleware('auth');
+
 Route::get('/threads/{channel}/{thread}/replies', 'ReplyController@index');
 
 Route::get('/threads/{channel}', 'ThreadController@index');
@@ -50,7 +54,9 @@ Route::patch('/replies/{reply}', 'ReplyController@update');
 
 Route::get('profile/{user}', 'ProfileController@show')->name('profile');
 
-Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
+Route::delete('profile/{user}/notifications/{notificationId}', 'UserNotificationController@destroy');
 
-// Route::get('/reply')
+Route::get('profile/{user}/notifications', 'UserNotificationController@index');
+
+Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 

@@ -40,12 +40,14 @@
 			    if(!page) {
 			        page = getParameterByName('page') ? getParameterByName('page') : 1;
 				}
+
 				return location.pathname + '/replies?page=' + page;
 			},
 
 			refresh({data}) {
 				this.dataSet = data;
 				this.items = data.data;
+				window.scroll(0, 0);
 			},
 		},
 

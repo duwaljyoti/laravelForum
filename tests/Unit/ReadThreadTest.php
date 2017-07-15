@@ -65,25 +65,47 @@ class ReadThreadTest extends TestCase
         $threadwithNoReply = $this->thread;
 
         $threadwithFourReply = create('App\Thread');
-        $secondThreadReply = create('App\Reply', ['thread_id' => $threadwithFourReply->id], 4);
+        create('App\Reply', ['thread_id' => $threadwithFourReply->id], 4);
 
         $threadWithThreeReply = create('App\Thread');
-        $secondThreadReply = create('App\Reply', ['thread_id' => $threadWithThreeReply->id], 3);
+        create('App\Reply', ['thread_id' => $threadWithThreeReply->id], 3);
 
         $response = $this->getJson('/threads?popular=true')->json();
 
-        $this->assertEquals([4, 3, 0], array_column($response, 'replies_count'));
+        $this->assertEquals([4, 3, 0], array_column($response, 'reply_count'));
+    }
+
+    public function testItShouldReturnThreadWithNoReplies()
+    {
+        $thread2 = create('App\Thread');
+
+        create('App\Reply',['thread_id' => $thread2->id], 2);
+
+        $response = $this->getJson('/threads?unanswered=1')->json();
+
+        $this->assertCount(1, $response);
     }
 
     public function testItShouldReturnReplyOfThreads()
     {
         $thread = create('App\Thread');
 
-        $threadReplies = create('App\Reply', ['thread_id' => $thread->id], 2);
+        create('App\Reply', ['thread_id' => $thread->id], 2);
 
         $threadReplyResponse = $this->getJson($thread->path() . '/replies')->json();
 
-        $this->assertCount(1, $threadReplyResponse['data']);
+        $this->assertCount(2, $threadReplyResponse['data']);
         $this->assertEquals(2, $threadReplyResponse['total']);
+    }
+
+    public function testItShouldTellUsWhetherTheThreadIsSubscribed()
+    {
+        $this->signIn();
+        $thread = $this->thread;
+        $this->assertFalse(!!$thread->isSubscribed);
+
+        $this->post('/threads/' . $thread->channel->id . '/' . $thread->id . '/subscribe');
+
+        $this->assertTrue(!!$thread->isSubscribed);
     }
 }

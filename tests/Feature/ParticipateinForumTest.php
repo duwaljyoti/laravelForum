@@ -26,13 +26,16 @@ class ParticipateinForumTest extends TestCase
 
         //Given the user replies to one of the thread
         $reply = make('App\Reply');
+        $reply2 = make('App\Reply');
+
         $this->post($thread->path() . '/replies', $reply->toArray());
-        // $this->assertInstanceOf('App\User', $reply->owner);
 
+        $this->assertDatabaseHas('replies', ['body' => $reply->body ]);
+        $this->assertEquals(1, $thread->fresh()->reply_count);
 
-        //The rely should be visible in the threads
-        $this->get($thread->path())
-            ->assertSee($reply->body);
+        //The reply should be visible in the threads
+//        $this->get($thread->path())
+//            ->assertSee($reply->body);
     }
     public function testAThreadShouldContainABody()
     {
@@ -69,6 +72,7 @@ class ParticipateinForumTest extends TestCase
         $this->delete("/replies/{$reply->id}")
             ->assertStatus(302);
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertEquals(0, $reply->thread->fresh()->reply_count);
     }
 
     public function testAnUnAuthenticatedUserMayNotEditReply()

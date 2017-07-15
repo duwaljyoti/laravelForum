@@ -27,17 +27,7 @@ class ThreadsTest extends TestCase
     public function testAUserCanViewSingleThread()
     {
         $this->get('/threads/test-channel/' . $this->thread->id)
-            ->assertSee($this->thread->title);        
-    }
-
-    public function testAUserCanSeeTheRepliesOfAThreadIfItHasOne()
-    {
-        $reply = factory('App\Reply')->create(['thread_id' => $this->thread->id]);
-
-        $response = $this->get('/threads/test-channel/' . $this->thread->id);
-
-        $response->assertSee($reply->body);
-
+            ->assertSee($this->thread->title);
     }
 
     public function testAUserCanReplyToAThread()
@@ -48,6 +38,8 @@ class ThreadsTest extends TestCase
         ]);
 
         $this->assertCount(1, $this->thread->replies);
+        $this->assertEquals(1, $this->thread->fresh()->reply_count);
+
     }
 
     public function testAUserCanFilterThreadAccordingToTheTagOrChannel()
@@ -56,9 +48,32 @@ class ThreadsTest extends TestCase
         $threadOfChannel = create('App\Thread', ['channel_id' => $channel->id]);
         $threadOfAnotherChannel = create('App\Thread');
 
-        $response = $this->get('threads/' . $channel->slug)
+        $this->get('threads/' . $channel->slug)
             ->assertSee($threadOfChannel->title)
             ->assertDontSee($threadOfAnotherChannel->title);
     }
 
+    public function testAThreadCanBeSubscribed()
+    {
+        // given we have a signed in user and a thread
+//        $user = $this->signIn();
+
+        //if he subscribes a thread
+        $this->thread->subscribe($userId = 1);
+
+        //all the subscribed threads should be displayed
+        $this->assertEquals(1, $this->thread->subscription->where('user_id', $userId)->count());
+
+
+    }
+
+    public function testAThreadCanBeUnSubscribed()
+    {
+        $this->thread->subscribe($userId = 12);
+
+        $this->thread->unSubscribe();
+
+        $this->assertEquals(0,
+            $this->thread->subscription->where('user_id', $userId )->count());
+    }
 }

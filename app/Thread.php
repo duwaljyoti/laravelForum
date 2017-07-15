@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
 use App\Acivity;
 
@@ -11,6 +12,8 @@ class Thread extends Model
     protected $guarded = [];
 
     protected $with = ['creator', 'channel'];
+
+    protected $appends = ['isSubscribed'];
 
     protected static function boot() 
     {
@@ -43,7 +46,30 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        $this->subscription->filter(function($subscription) use ($reply) {
+            return  $subscription->user_id != $reply->user_id;
+        })
+            ->each->notify($reply);
+
+
+//            ->each(function($subscription) use ($reply) {
+//                dd($subscription);
+//                $subscription->user->notify(new ThreadWasUpdated($this, $reply));
+//            });
+
+//        foreach($this->subscription as $subscription) {
+//            if($subscription->user_id != $reply->id) {
+//                $subscription->user->notify(new ThreadWasUpdated($this, $reply));
+//            }
+//        }
+
+        //  alternate way of adding a reply count.
+        //  $this->increment('reply_count');
+
+        return $reply;
+
     }
 
     public function channel()
@@ -56,4 +82,31 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    public function subscribe($userId = null)
+    {
+        $subscription =  $this->subscription()->create([
+            'user_id' => $userId ?: auth()->id()
+        ]);
+
+        return $this;
+    }
+
+    public function subscription()
+    {
+        return $this->hasMany('App\ThreadSubscription');
+    }
+
+    public function unSubscribe($userId = null)
+    {
+        $userId = auth()->id() ?: $userId;
+
+        return $this->subscription()->delete([ 'user_id' => $userId ]);
+    }
+
+    public function getIsSubscribedAttribute()
+    {
+        return $this->subscription()
+            ->where('user_id', auth()->id())
+            ->exists();
+    }
 }

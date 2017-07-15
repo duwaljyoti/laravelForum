@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFavouritesTable extends Migration
+class CreateThreadSubscriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,17 @@ class CreateFavouritesTable extends Migration
      */
     public function up()
     {
-        Schema::create('favourites', function (Blueprint $table) {
+        Schema::create('thread_subscriptions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('favourited_id');
-            $table->string('favourited_type', 60);
+            $table->unsignedInteger('thread_id');
             $table->timestamps();
-            $table->unique(['user_id', 'favourited_id', 'favourited_type']);
-        });        
+            $table->unique(['user_id', 'thread_id']);
+            $table->foreign('thread_id')
+                ->references('id')
+                ->on('threads')
+                ->onDelte('cascade');
+        });
     }
 
     /**
@@ -30,6 +33,6 @@ class CreateFavouritesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('favourites');
+        Schema::dropIfExists('thread_subscriptions');
     }
 }

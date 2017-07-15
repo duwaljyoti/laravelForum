@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <thread-view 
-         :replies-counter="{{ $thread->replies_count }}"
+    <thread-view
+         :replies-counter="{{ $thread->reply_count }}"
          inline-template 
          >
         <div class="container">
@@ -42,12 +42,12 @@
                         <div class="panel-body">
                             This thread was published at {{ $thread->created_at->diffForHumans() }}
                             By <a href = '#'>{{ $thread->creator->name }}</a><p>
-                            {{-- {{ $thread->replies_count }} --}}
                             <div v-text='replyCount'></div>
                             {{ str_plural('comment', $thread->replies_count) }}
-
+                            <p></p>
+                            <subscription :is-subscribed={{ json_encode($thread->isSubscribed) }}></subscription>
                         </div>
-                    </div>                        
+                    </div>
                 </div>
             </div>       
         </div>
