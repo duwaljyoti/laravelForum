@@ -18,7 +18,7 @@ window.Vue = require('vue');
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('thread-view', require('./pages/Thread.vue'));
-// Vue.component('replies', require('./components/Replies.vue'));
+Vue.component('paginator', require('./components/Paginator.vue'));
 
 const app = new Vue({
     el: '#app'

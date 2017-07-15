@@ -33,7 +33,6 @@
                     <hr>
 
                     <replies 
-                        :data="{{ $thread->replies }}"
                         @reply-created="replyCount++"
                         @removed="replyCount--"
                     ></replies>
