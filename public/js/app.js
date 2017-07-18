@@ -26347,6 +26347,7 @@ Vue.component('example', __webpack_require__(167));
 Vue.component('flash', __webpack_require__(169));
 Vue.component('thread-view', __webpack_require__(174));
 Vue.component('paginator', __webpack_require__(170));
+Vue.component('user-notification', __webpack_require__(194));
 
 var app = new Vue({
   el: '#app'
@@ -58747,6 +58748,145 @@ module.exports = function listToStyles (parentId, list) {
 __webpack_require__(129);
 module.exports = __webpack_require__(130);
 
+
+/***/ }),
+/* 187 */,
+/* 188 */,
+/* 189 */,
+/* 190 */,
+/* 191 */,
+/* 192 */,
+/* 193 */,
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(195),
+  /* template */
+  __webpack_require__(196),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/var/www/html/laravelForum/resources/assets/js/components/UserNotifications.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] UserNotifications.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-74ff52d1", Component.options)
+  } else {
+    hotAPI.reload("data-v-74ff52d1", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 195 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            notifications: false
+        };
+    },
+    mounted: function mounted() {
+        this.fetchNotifications();
+    },
+
+
+    methods: {
+        markAsRead: function markAsRead(notification) {
+            var _this = this;
+
+            axios.delete("/profile/" + window.App.loggedUser.name + "/notifications/" + notification.id).then(function (response) {
+                _this.fetchNotifications();
+            });
+        },
+        fetchNotifications: function fetchNotifications() {
+            var _this2 = this;
+
+            axios.get("/profile/" + window.App.loggedUser.name + "/notifications").then(function (response) {
+                _this2.notifications = response.data;
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('li', {
+    staticClass: "dropdown"
+  }, [_vm._m(0), _vm._v(" "), (_vm.notifications.length) ? _c('ul', {
+    staticClass: "dropdown-menu"
+  }, _vm._l((_vm.notifications), function(notification) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": notification.data.link
+      },
+      domProps: {
+        "textContent": _vm._s(notification.data.message)
+      },
+      on: {
+        "click": function($event) {
+          _vm.markAsRead(notification)
+        }
+      }
+    })])
+  })) : _c('ul', {
+    staticClass: "dropdown-menu"
+  }, [_vm._v("   All caught Up")])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('a', {
+    staticClass: "dropdown-toggle",
+    attrs: {
+      "href": "#",
+      "data-toggle": "dropdown"
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-bell"
+  })])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-74ff52d1", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
