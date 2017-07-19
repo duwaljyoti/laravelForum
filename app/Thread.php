@@ -47,10 +47,19 @@ class Thread extends Model
     public function addReply($reply)
     {
         $reply = $this->replies()->create($reply);
+        $this->notifyUsers($reply);
 
-        $this->subscription->filter(function($subscription) use ($reply) {
-            return  $subscription->user_id != $reply->user_id;
-        })
+        return $reply;
+
+    }
+
+    public function notifyUsers($reply)
+    {
+        $this->subscription
+            ->where('user_id', '!=', $reply->user_id)
+//            ->filter(function($subscription) use ($reply) {
+//            return  $subscription->user_id != $reply->user_id;
+//        })
             ->each->notify($reply);
 
 
@@ -67,9 +76,6 @@ class Thread extends Model
 
         //  alternate way of adding a reply count.
         //  $this->increment('reply_count');
-
-        return $reply;
-
     }
 
     public function channel()
