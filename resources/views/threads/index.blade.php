@@ -9,7 +9,13 @@
                         <div class="panel-heading">
                             <div class="level">
                                 <h4 class='flex'>
-                                    <a href='{{ $thread->path() }}'>{{ $thread->title }}</a>
+                                    <a href='{{ $thread->path() }}'>
+                                        @if(auth()->check() && $thread->hasUpdatesFor(auth()->user()))
+                                            <b>{{ $thread->title }}</b>
+                                        @else
+                                            {{ $thread->title }}
+                                        @endif
+                                    </a>
                                 </h4>  
                                 <a href = {{ $thread->path() }} >
                                     {{ $thread->replies_count }}
@@ -19,7 +25,6 @@
                         </div>
                         <div class="panel-body">
                             <article>
-
                                 <div class="body">{{ $thread->body }}</div>
                             </article>
                             <hr>

@@ -108,4 +108,17 @@ class ReadThreadTest extends TestCase
 
         $this->assertTrue(!!$thread->isSubscribed);
     }
+
+    public function testItShouldReturnWithABoldTitleIfTheUserHasNotVisitedThreadSinceItWasLastUpdated()
+    {
+        $this->signIn();
+        $this->assertTrue($this->thread->hasUpdatesFor(auth()->user()));
+
+        auth()->user()->read($this->thread);
+//        cache()->forever(
+//            auth()->user()->visitedThreadCacheKey($this->thread),
+//            \Carbon\Carbon::now());
+//        dd($this->thread->updated_at, cache($key));
+        $this->assertFalse($this->thread->hasUpdatesFor(auth()->user()));
+    }
 }

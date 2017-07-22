@@ -85,7 +85,7 @@ class ThreadsTest extends TestCase
         Notification::fake();
 
         $this->signIn() //sign in the user
-            ->thread 
+            ->thread
             ->subscribe()
             ->addReply([
                 'user_id' => create('App\User')->id,
