@@ -32,7 +32,6 @@
 				axios.get(this.url(page))
 					.then(this.refresh)
 					.catch(exception => {
-						console.log('Error', exception)
 					})
 			},
 

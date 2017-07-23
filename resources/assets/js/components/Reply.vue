@@ -36,6 +36,7 @@
 	import Favourite from './Favourite.vue'
 	import moment from 'moment'
 
+	// confusing => how does it work with the blade component?
 	export default {
 		props: ['data'],
 		components: { Favourite },
@@ -62,13 +63,13 @@
 				axios.patch('/replies/' + this.data.id,
 					 { body: this.reply })
 					.then((response) => {
-						if(response.status == 200) {
-							flash('You have succesfully edited your reply')
+						if(response.status === 200) {
+							flash('You have successfully edited your reply');
 							this.editing = false
 						}
 					})
 					.catch((error) => {
-						console.log(error)
+						flash(error.response.data, 'danger');
 					})
 			},
 			destroy() {

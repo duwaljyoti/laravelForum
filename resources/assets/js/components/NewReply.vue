@@ -35,12 +35,13 @@
 						body: this.body
 					})
 					.then((response) => {
-						this.body = ''
-						this.$emit('created', response.data)
-						flash('Your Reply is posted')
+						this.body = '';
+						this.$emit('created', response.data);
+						flash('Your Reply is posted');
 					})
 					.catch((error) => {
-
+				    	console.log(error.response);
+				    	flash(error.response.data, 'danger');
 					})
 			}
 		},

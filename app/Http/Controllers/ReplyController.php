@@ -21,20 +21,18 @@ class ReplyController extends Controller
 
     public function store($channel, Thread $thread, Spam $spam)
     {
-        $this->validateReply();
+        try {
 
-    	$reply = $thread->addReply([
-    		'body' => request('body'),
-    		'user_id' => auth()->id(),
-    	]);
+            $this->validateReply();
 
-        if(request()->expectsJson()) {
-            return $reply->load('owner');
+            $reply = $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id(),
+            ]);
+        } catch (\Exception $e) {
+            return response('Spam detected one more time.', 422);
         }
-
-
-    	return back()
-            ->with('flash', 'Your reply has been left.');
+        return $reply->load('owner');
     }
 
     public function destroy(Reply $reply)
@@ -55,9 +53,13 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        $this->validateReply();
+        try {
+            $this->validateReply();
+            $reply->update(['body' => request('body')]);
+        } catch (\Exception $e) {
 
-        $reply->update(['body' => request('body')]);
+            return response('Your Reply seem to have some Spam!', 422);
+        }
     }
 
     public function validateReply()
