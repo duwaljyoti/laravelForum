@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
 
@@ -19,11 +19,9 @@ class ReplyController extends Controller
         return $thread->replies()->paginate(5);
     }
 
-    public function store($channel, Thread $thread)
+    public function store($channel, Thread $thread, Spam $spam)
     {
-        $this->validate(request(), [
-            'body' => 'required'
-        ]);
+        $this->validateReply();
 
     	$reply = $thread->addReply([
     		'body' => request('body'),
@@ -41,7 +39,6 @@ class ReplyController extends Controller
 
     public function destroy(Reply $reply)
     {
-
         $this->authorize('update', $reply);
 
         $reply->delete();
@@ -58,6 +55,18 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
+        $this->validateReply();
+
         $reply->update(['body' => request('body')]);
     }
+
+    public function validateReply()
+    {
+        $this->validate(request(), [
+            'body' => 'required'
+        ]);
+
+        resolve(Spam::class)->detect(request('body'));
+    }
+
 }

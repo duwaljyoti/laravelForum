@@ -37,6 +37,7 @@ class ParticipateinForumTest extends TestCase
 //        $this->get($thread->path())
 //            ->assertSee($reply->body);
     }
+
     public function testAThreadShouldContainABody()
     {
         $this->withExceptionHandling()->signIn();
@@ -96,5 +97,21 @@ class ParticipateinForumTest extends TestCase
         $this->patch("/replies/{$reply->id}", ['body' => $updatedReply])
             ->assertStatus(200);
         $this->assertDatabaseHas('replies', ['id' => $reply->id, 'body' => $updatedReply]);
-    }     
+    }
+
+    public function testItShouldFilterSpamCommentsOnThread()
+    {
+        $thread = create('App\Thread');
+
+        $this->signIn();
+
+        $reply = create('App\Reply', [
+            'body' => 'Spam Texts.'
+        ]);
+
+        $this->expectException('Exception');
+
+        $this->post($thread->path() . '/replies', $reply->toArray());
+
+    }
 }
