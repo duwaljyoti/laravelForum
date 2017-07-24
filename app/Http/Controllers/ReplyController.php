@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Forms\CreatePostForm;
 use App\Reply;
 use App\Thread;
 use Illuminate\Support\Facades\Gate;
@@ -19,25 +20,12 @@ class ReplyController extends Controller
         return $thread->replies()->paginate(5);
     }
 
-    public function store($channel, Thread $thread)
+    public function store($channel, Thread $thread, CreatePostForm $createPostForm)
     {
-        try {
-            if(Gate::denies('create', new Reply)) {
-                return response('You seem to be posting too frequently.', 422);
-            }
-
-            $this->validate(request(), [
-                'body' => 'required|spamFree'
-            ]);
-
-            $reply = $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id(),
-            ]);
-        } catch (\Exception $e) {
-            return response('Spam detected one more time.', 422);
-        }
-        return $reply->load('owner');
+        return $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id(),
+        ])->load('owner');
     }
 
     public function destroy(Reply $reply)

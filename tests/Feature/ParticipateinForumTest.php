@@ -101,6 +101,8 @@ class ParticipateInForumTest extends TestCase
 
     public function testItShouldFilterSpamCommentsOnThread()
     {
+        $this->withExceptionHandling();
+
         $thread = create('App\Thread');
         $this->signIn();
 
@@ -108,12 +110,14 @@ class ParticipateInForumTest extends TestCase
             'body' => 'Spam Texts'
         ]);
 
-        $this->post($thread->path() . '/replies', $reply->toArray())
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
             ->assertStatus(422);
     }
 
     public function testAUserCanReplyForMaximumOncePerMinute()
     {
+        $this->withExceptionHandling();
+
         $this->signIn();
         $thread = create('App\Thread');
 
@@ -125,6 +129,6 @@ class ParticipateInForumTest extends TestCase
             ->assertStatus(200);
 
         $this->post($thread->path() . '/replies', $reply->toArray())
-            ->assertStatus(422);
+            ->assertStatus(429);
     }
 }
