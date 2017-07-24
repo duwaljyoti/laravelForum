@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
 
@@ -19,11 +18,12 @@ class ReplyController extends Controller
         return $thread->replies()->paginate(5);
     }
 
-    public function store($channel, Thread $thread, Spam $spam)
+    public function store($channel, Thread $thread)
     {
         try {
-
-            $this->validateReply();
+            $this->validate(request(), [
+                'body' => 'required|spamFree'
+            ]);
 
             $reply = $thread->addReply([
                 'body' => request('body'),
@@ -54,21 +54,14 @@ class ReplyController extends Controller
         $this->authorize('update', $reply);
 
         try {
-            $this->validateReply();
+            $this->validate(request(), [
+                'body' => 'required|spamFree'
+            ]);
+
             $reply->update(['body' => request('body')]);
         } catch (\Exception $e) {
 
             return response('Your Reply seem to have some Spam!', 422);
         }
     }
-
-    public function validateReply()
-    {
-        $this->validate(request(), [
-            'body' => 'required'
-        ]);
-
-        resolve(Spam::class)->detect(request('body'));
-    }
-
 }

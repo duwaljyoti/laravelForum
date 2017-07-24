@@ -102,16 +102,15 @@ class ParticipateinForumTest extends TestCase
     public function testItShouldFilterSpamCommentsOnThread()
     {
         $thread = create('App\Thread');
-
         $this->signIn();
 
         $reply = create('App\Reply', [
-            'body' => 'Spam Texts.'
+            'body' => 'Spam Texts'
         ]);
 
-        $this->expectException('Exception');
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
 
-        $this->post($thread->path() . '/replies', $reply->toArray());
 
     }
 }
