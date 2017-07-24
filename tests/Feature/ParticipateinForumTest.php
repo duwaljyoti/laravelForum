@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ParticipateinForumTest extends TestCase
+class ParticipateInForumTest extends TestCase
 {
 	use DatabaseMigrations;
 
@@ -110,7 +110,21 @@ class ParticipateinForumTest extends TestCase
 
         $this->post($thread->path() . '/replies', $reply->toArray())
             ->assertStatus(422);
+    }
 
+    public function testAUserCanReplyForMaximumOncePerMinute()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
 
+        $reply = create('App\Reply', [
+            'body' => 'Decent Texts'
+        ]);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(200);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
     }
 }
