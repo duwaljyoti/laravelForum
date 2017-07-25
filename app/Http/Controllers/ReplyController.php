@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Forms\CreatePostForm;
+use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Thread;
+use App\User;
 use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
@@ -22,10 +24,25 @@ class ReplyController extends Controller
 
     public function store($channel, Thread $thread, CreatePostForm $createPostForm)
     {
-        return $thread->addReply([
+        $reply =  $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),
-        ])->load('owner');
+        ]);
+
+
+        preg_match_all('/\@([^\s\.]+)/', $reply->body, $mentioned);
+        $usernames = $mentioned[1];
+
+        foreach($usernames as $username) {
+            $user = User::whereName($username)->first();
+
+            if($user) {
+                dump($user->id);
+                $user->notify(new YouWereMentioned($reply));
+            }
+        }
+
+        return $reply->load('owner');
     }
 
     public function destroy(Reply $reply)

@@ -15,6 +15,8 @@ class CreatePostForm extends FormRequest
      *
      * @return bool
      */
+
+    // confusing
     public function authorize()
     {
         return Gate::allows('create', new Reply);

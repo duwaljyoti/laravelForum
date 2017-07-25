@@ -26,7 +26,6 @@ class ParticipateInForumTest extends TestCase
 
         //Given the user replies to one of the thread
         $reply = make('App\Reply');
-        $reply2 = make('App\Reply');
 
         $this->post($thread->path() . '/replies', $reply->toArray());
 
