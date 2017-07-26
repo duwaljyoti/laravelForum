@@ -32,7 +32,6 @@ class MentionUserTest extends TestCase
 
         $this->json('post', $thread->path() . '/replies', $reply->toArray());
 
-        dump($hima->id);
         //she should be notified
         $this->assertCount(1, $hima->notifications);
     }

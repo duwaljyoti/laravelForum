@@ -32,4 +32,13 @@ class ReplyTest extends TestCase
         $reply->created_at = Carbon::now()->subMonth();
         $this->assertFalse($reply->wasJustPublished());
     }
+
+    public function testItShouldReturnBackListOfMentionedPeople()
+    {
+        $reply = create('App\Reply', [
+            'body' => 'oi @hima hey had been missing you .. @jyoti'
+        ]);
+
+        $this->assertEquals(['hima', 'jyoti'], $reply->mentionedUsers());
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Events\ThreadReceivedANewReply;
 use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
 use App\Acivity;
@@ -47,35 +48,10 @@ class Thread extends Model
     public function addReply($reply)
     {
         $reply = $this->replies()->create($reply);
-        $this->notifyUsers($reply);
+        event(new ThreadReceivedANewReply($reply));
 
         return $reply;
 
-    }
-
-    public function notifyUsers($reply)
-    {
-        $this->subscription
-            ->where('user_id', '!=', $reply->user_id)
-//            ->filter(function($subscription) use ($reply) {
-//            return  $subscription->user_id != $reply->user_id;
-//        })
-            ->each->notify($reply);
-
-
-//            ->each(function($subscription) use ($reply) {
-//                dd($subscription);
-//                $subscription->user->notify(new ThreadWasUpdated($this, $reply));
-//            });
-
-//        foreach($this->subscription as $subscription) {
-//            if($subscription->user_id != $reply->id) {
-//                $subscription->user->notify(new ThreadWasUpdated($this, $reply));
-//            }
-//        }
-
-        //  alternate way of adding a reply count.
-        //  $this->increment('reply_count');
     }
 
     public function channel()
