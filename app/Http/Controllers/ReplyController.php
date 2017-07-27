@@ -47,16 +47,10 @@ class ReplyController extends Controller
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
+        $this->validate(request(), [
+            'body' => 'required|spamFree'
+        ]);
 
-        try {
-            $this->validate(request(), [
-                'body' => 'required|spamFree'
-            ]);
-
-            $reply->update(['body' => request('body')]);
-        } catch (\Exception $e) {
-
-            return response('Your Reply seem to have some Spam!', 422);
-        }
+        $reply->update(['body' => request('body')]);
     }
 }
