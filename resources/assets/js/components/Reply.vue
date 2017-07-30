@@ -24,7 +24,7 @@
 				</form>
 			</div>
 
-	      	<div v-else v-text='reply'></div>    
+	      	<div v-else v-html='reply'></div>
 	     </div>
 	     <div class="panel-footer level" v-if='canUpdate'>
 	     	<button class='btn-xs mr-1' @click='editing = true'>Edit</button>

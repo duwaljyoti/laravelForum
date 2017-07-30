@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Reply;
 
 class ReplyTest extends TestCase
 {
@@ -35,10 +35,22 @@ class ReplyTest extends TestCase
 
     public function testItShouldReturnBackListOfMentionedPeople()
     {
-        $reply = create('App\Reply', [
+        $reply = new Reply([
             'body' => 'oi @hima hey had been missing you .. @jyoti'
         ]);
 
         $this->assertEquals(['hima', 'jyoti'], $reply->mentionedUsers());
+    }
+
+    public function testItShouldWrapAnchorTagsForMentionedUsers()
+    {
+        $reply = new Reply([
+            'body' => "oi hey had been missing you @hima."
+        ]);
+
+        $this->assertEquals(
+            'oi hey had been missing you <a href="/profile/hima">@hima</a>.',
+            $reply->body
+        );
     }
 }

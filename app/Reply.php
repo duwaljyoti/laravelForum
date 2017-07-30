@@ -56,8 +56,16 @@ class Reply extends Model
 
     public function mentionedUsers()
     {
-        preg_match_all('/\@([^\s\.]+)/', $this->body, $mentioned);
+        preg_match_all('/@([\w\-]+)/', $this->body, $mentioned);
 
         return $mentioned[1];
+    }
+
+    // confusing
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profile/$1">$0</a>', $body);
+
+        // testcases => @JaneDoe!/,/?/.   $jane.doe
     }
 }
