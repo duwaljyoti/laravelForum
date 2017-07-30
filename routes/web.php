@@ -60,3 +60,5 @@ Route::get('profile/{user}/notifications', 'UserNotificationController@index');
 
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 
+Route::get('api/users', 'Api\UserController@index');
+

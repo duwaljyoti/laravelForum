@@ -35,4 +35,25 @@ class MentionUserTest extends TestCase
         //she should be notified
         $this->assertCount(1, $hima->notifications);
     }
+
+    public function testItShouldGiveOnlyUserStartingWithCertainName()
+    {
+        create('App\User', [
+            'name' => 'hima'
+        ]);
+
+        create('App\User', [
+            'name' => 'himaMalini'
+        ]);
+
+         create('App\User', [
+            'name' => 'barsha'
+        ]);
+
+        $response = $this->json('get', 'api/users?q=');
+        $this->assertCount(3, $response->json());
+
+        $response = $this->json('get', 'api/users?q=hima');
+        $this->assertCount(2, $response->json());
+    }
 }

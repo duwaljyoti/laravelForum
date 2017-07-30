@@ -7,6 +7,7 @@
 	        	class = 'form-control'
 	        	v-model = 'body'
 	        	placeholder = 'This sounds more appropriate!!'
+				id = "newReply"
 	        >
 	        </textarea>
 	    	<button type="submit" class = 'btn btn-default' @click='saveReply'>Submit</button>
@@ -21,8 +22,10 @@
 
 
 <script>
-	export default {
+    import 'jquery.caret';
+    import 'at.js';
 
+	export default {
 		data() {
 			return {
 				body: '',
@@ -49,6 +52,20 @@
 			isSignedIn: function() {
 				return window.App.signedIn;
 			}
+		},
+		mounted() {
+            $('#newReply').atwho({
+                at: "@",
+				delay: 300,
+                callbacks: {
+                    remoteFilter: function(query, callback) {
+                        console.log('being called from here');
+                        $.getJSON("/api/users", {q: query}, function(usernames) {
+                            callback(usernames)
+                        });
+                    }
+                }
+            });
 		}
 	}
 
