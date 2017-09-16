@@ -15,22 +15,30 @@ class ThreadController extends Controller
         $this->middleware('auth')->only(['store', 'create', 'destroy']);
     }
 
+    /**
+     * @param $channel
+     * @param $filters
+     * @return mixed
+     */
     public function getThreads($channel, $filters)
     {
-        $threads = Thread::latest()->filter($filters);        
+        $threads = Thread::latest()->filter($filters);
 
         if($channel->exists) {
             $threads->where('channel_id', $channel->id);
         }
 
         // Filters down according to the filter and get me the result
-        $threads = $threads->get();
+        $threads = $threads->paginate(5);
 
         return $threads;        
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Channel $channel
+     * @param ThreadFilters $filters
      *
      * @return \Illuminate\Http\Response
      */

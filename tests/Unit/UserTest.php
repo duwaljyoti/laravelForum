@@ -2,6 +2,7 @@
 
 namespace App\Tests\Unit;
 
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -15,5 +16,15 @@ class UserTest extends TestCase
         $reply = create('App\Reply', [ 'user_id' => $user->id ]);
 
         $this->assertEquals($reply->id, $user->lastReply->id);
+    }
+
+    public function testItShouldReturnDefaultImageIfNoAvatarIsUnavailable()
+    {
+        $user = create(User::class);
+
+        $this->assertEquals('storage/avatars/default.jpg', $user->avatar());
+
+        $user->avatar_path = 'testimage.jpg';
+        $this->assertEquals('testimage.jpg', $user->avatar());
     }
 }

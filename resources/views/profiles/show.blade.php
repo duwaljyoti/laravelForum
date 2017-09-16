@@ -1,13 +1,23 @@
 @extends('layouts.app')
 
-
 @section('content')
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				<div class="pageHeader">
-					<h1>{{ $profileUser->name }}
-					<small>Since {{ $profileUser->created_at->diffForHumans() }}</small></h1>
+					<h1>{{ $profileUser->name }}</h1>
+					<small>Since {{ $profileUser->created_at->diffForHumans() }}</small>
+                    <p></p>
+                    <img src="{{ $profileUser->avatar() }}" height="50" width="50">
+                    @can('update', $profileUser)
+                        <p>
+                            <form action="{{ route('upload-avatar', $profileUser) }}" method="post" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                <input type="file" name="avatar">
+                            <button type="submit" class="btn btn-primary mr-1 btn-xs">Submit</button>
+                            </form>
+                        </p>
+                    @endcan
 				</div>
 
 		        <div class="panel-body">
