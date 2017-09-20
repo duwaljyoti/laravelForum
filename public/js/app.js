@@ -36836,7 +36836,7 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(130);
-module.exports = __webpack_require__(191);
+module.exports = __webpack_require__(194);
 
 
 /***/ }),
@@ -36865,6 +36865,7 @@ Vue.component('flash', __webpack_require__(156));
 Vue.component('thread-view', __webpack_require__(164));
 Vue.component('paginator', __webpack_require__(185));
 Vue.component('user-notification', __webpack_require__(188));
+Vue.component('avatar-form', __webpack_require__(191));
 
 var app = new Vue({
   el: '#app'
@@ -61108,6 +61109,153 @@ if (false) {
 
 /***/ }),
 /* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(192),
+  /* template */
+  __webpack_require__(193),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/var/www/html/laravelForum/resources/assets/js/components/AvatarForm.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] AvatarForm.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-64fd1d79", Component.options)
+  } else {
+    hotAPI.reload("data-v-64fd1d79", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 192 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['data'],
+  data: function data() {
+    return {
+      avatar: this.data.avatar_path
+    };
+  },
+
+  computed: {
+    canUpdate: function canUpdate() {
+      var _this = this;
+
+      return this.authorize(function (user) {
+        return _this.data.id === user.id;
+      });
+    }
+  },
+  methods: {
+    changed: function changed(e) {
+      var _this2 = this;
+
+      // here is a bit of confusion..
+
+      // if dere are no files at all just return
+      if (!e.target.files.length) return;
+
+      // get the file
+      var avatar = e.target.files[0];
+
+      // instantiate a new file reader object
+      var reader = new FileReader();
+
+      reader.readAsDataURL(avatar);
+
+      reader.onload = function (e) {
+        _this2.avatar = e.target.result;
+      };
+
+      this.persist(avatar);
+    },
+    persist: function persist(avatar) {
+      var data = new FormData();
+      data.append('avatar', avatar);
+
+      axios.post('/api/users/' + this.data.id + '/avatar', data).then(function (response) {
+        flash('Avatar Uploaded Succesfully.');
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 193 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_vm._v("\n    " + _vm._s(_vm.data.name) + "\n    "), _c('p'), _vm._v(" "), _c('small', [_vm._v("Since " + _vm._s(_vm.data.created_at))]), _vm._v(" "), _c('p'), _vm._v(" "), _c('img', {
+    attrs: {
+      "src": _vm.avatar,
+      "height": "50",
+      "width": "50"
+    }
+  }), _vm._v(" "), (_vm.canUpdate) ? _c('form', {
+    attrs: {
+      "enctype": "multipart/form-data"
+    }
+  }, [_c('input', {
+    attrs: {
+      "type": "file",
+      "name": "avatar",
+      "accept": "image/*"
+    },
+    on: {
+      "change": _vm.changed
+    }
+  })]) : _vm._e()])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-64fd1d79", module.exports)
+  }
+}
+
+/***/ }),
+/* 194 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
