@@ -36836,7 +36836,7 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(130);
-module.exports = __webpack_require__(194);
+module.exports = __webpack_require__(197);
 
 
 /***/ }),
@@ -61116,7 +61116,7 @@ var Component = __webpack_require__(2)(
   /* script */
   __webpack_require__(192),
   /* template */
-  __webpack_require__(193),
+  __webpack_require__(196),
   /* styles */
   null,
   /* scopeId */
@@ -61153,6 +61153,10 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ImageUpload_vue__ = __webpack_require__(193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ImageUpload_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ImageUpload_vue__);
+//
+//
 //
 //
 //
@@ -61167,8 +61171,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
+  components: { ImageUpload: __WEBPACK_IMPORTED_MODULE_0__ImageUpload_vue___default.a },
   data: function data() {
     return {
       avatar: this.data.avatar_path
@@ -61185,33 +61192,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
-    changed: function changed(e) {
-      var _this2 = this;
-
-      // here is a bit of confusion..
-
-      // if dere are no files at all just return
-      if (!e.target.files.length) return;
-
-      // get the file
-      var avatar = e.target.files[0];
-
-      // instantiate a new file reader object
-      var reader = new FileReader();
-
-      reader.readAsDataURL(avatar);
-
-      reader.onload = function (e) {
-        _this2.avatar = e.target.result;
-      };
-
-      this.persist(avatar);
+    onLoad: function onLoad(avatar) {
+      this.avatar = avatar.src;
+      this.persist(avatar.file);
     },
     persist: function persist(avatar) {
       var data = new FormData();
       data.append('avatar', avatar);
 
-      axios.post('/api/users/' + this.data.id + '/avatar', data).then(function (response) {
+      axios.post('/api/users/' + this.data.id + '/avatar', data).then(function () {
         flash('Avatar Uploaded Succesfully.');
       }).catch(function (error) {
         console.log(error);
@@ -61224,27 +61213,127 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(194),
+  /* template */
+  __webpack_require__(195),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/var/www/html/laravelForum/resources/assets/js/components/ImageUpload.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ImageUpload.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-71990ea0", Component.options)
+  } else {
+    hotAPI.reload("data-v-71990ea0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 194 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  methods: {
+    changed: function changed(event) {
+      var _this = this;
+
+      if (!event.target.files.length) return;
+
+      var file = event.target.files[0];
+
+      var reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = function (event) {
+        var src = event.target.result;
+
+        _this.$emit('loaded', { file: file, src: src });
+      };
+    }
+  }
+});
+
+/***/ }),
+/* 195 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_vm._v("\n    " + _vm._s(_vm.data.name) + "\n    "), _c('p'), _vm._v(" "), _c('small', [_vm._v("Since " + _vm._s(_vm.data.created_at))]), _vm._v(" "), _c('p'), _vm._v(" "), _c('img', {
-    attrs: {
-      "src": _vm.avatar,
-      "height": "50",
-      "width": "50"
-    }
-  }), _vm._v(" "), (_vm.canUpdate) ? _c('form', {
-    attrs: {
-      "enctype": "multipart/form-data"
-    }
-  }, [_c('input', {
+  return _c('input', {
     attrs: {
       "type": "file",
-      "name": "avatar",
       "accept": "image/*"
     },
     on: {
       "change": _vm.changed
     }
-  })]) : _vm._e()])
+  })
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-71990ea0", module.exports)
+  }
+}
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('p'), _vm._v(" "), _c('small', [_vm._v("Since " + _vm._s(_vm.data.created_at))]), _vm._v(" "), _c('div', {
+    staticClass: "flex"
+  }, [_c('img', {
+    staticClass: "mr-1",
+    attrs: {
+      "src": _vm.avatar,
+      "height": "50",
+      "width": "50"
+    }
+  }), _vm._v("\n        " + _vm._s(_vm.data.name) + "\n    ")]), _vm._v(" "), _c('p'), _vm._v(" "), (_vm.canUpdate) ? _c('form', {
+    attrs: {
+      "enctype": "multipart/form-data"
+    }
+  }, [_c('image-upload', {
+    staticClass: "mr-1",
+    attrs: {
+      "name": "avatar"
+    },
+    on: {
+      "loaded": _vm.onLoad
+    }
+  })], 1) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -61255,7 +61344,7 @@ if (false) {
 }
 
 /***/ }),
-/* 194 */
+/* 197 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

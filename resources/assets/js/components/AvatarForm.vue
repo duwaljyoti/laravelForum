@@ -1,19 +1,24 @@
 <template>
     <div>
-        {{ data.name }}
         <p></p>
         <small>Since {{ data.created_at }}</small>
+        <div class="flex">
+            <img :src="avatar" height="50" width="50" class="mr-1">
+            {{ data.name }}
+        </div>
         <p></p>
-        <img :src="avatar" height="50" width="50">
         <form enctype="multipart/form-data" v-if="canUpdate">
-            <input type="file" name="avatar" @change="changed" accept="image/*">
+            <image-upload name="avatar" @loaded="onLoad" class="mr-1"></image-upload>
         </form>
     </div>
 </template>
 
 <script>
+    import ImageUpload from './ImageUpload.vue'
+
     export default {
       props: ['data'],
+      components: { ImageUpload },
       data() {
         return {
           avatar: this.data.avatar_path,
@@ -25,26 +30,9 @@
         }
       },
       methods: {
-        changed(e) {
-          // here is a bit of confusion..
-
-          // if dere are no files at all just return
-          if(!e.target.files.length) return;
-
-          // get the file
-          let avatar = e.target.files[0];
-
-          // instantiate a new file reader object
-          let reader = new FileReader();
-
-
-          reader.readAsDataURL(avatar);
-
-          reader.onload = e => {
-            this.avatar = e.target.result;
-          };
-
-          this.persist(avatar);
+        onLoad(avatar) {
+          this.avatar = avatar.src;
+          this.persist(avatar.file);
         },
 
         persist(avatar) {
@@ -52,7 +40,7 @@
           data.append('avatar', avatar);
 
           axios.post(`/api/users/${this.data.id}/avatar`, data)
-            .then((response) => {
+            .then(() => {
                 flash('Avatar Uploaded Succesfully.');
             })
             .catch((error) => {
