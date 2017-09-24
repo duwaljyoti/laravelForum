@@ -3,16 +3,12 @@
 namespace App;
 
 use App\Events\ThreadReceivedANewReply;
-use App\Notifications\ThreadWasUpdated;
 use App\Traits\RecordActivity;
-use App\Traits\RecordVisits;
 use Illuminate\Database\Eloquent\Model;
-use App\Acivity;
-use Illuminate\Support\Facades\Redis;
 
 class Thread extends Model
 {
-    use RecordActivity, RecordVisits;
+    use RecordActivity;
     protected $guarded = [];
 
     protected $with = ['creator', 'channel'];
@@ -102,5 +98,10 @@ class Thread extends Model
 
         //compare it with the data we have saved in cache.
         return $this->updated_at > cache($key);
+    }
+
+    public function visits()
+    {
+        return new Visits($this);
     }
 }

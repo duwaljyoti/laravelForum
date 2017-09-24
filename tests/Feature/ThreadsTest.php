@@ -103,17 +103,13 @@ class ThreadsTest extends TestCase
     public function testItShouldGiveThreadNumberOfVisits()
     {
         $thread = create('App\Thread');
-        $thread->recordsVisit();
 
-        $thread->resetVisits();
-        $this->assertSame(0, $thread->visits());
+        $thread->visits()->reset();
 
-        $thread->recordsVisit();
+        $this->assertSame(0, $thread->visits()->count());
 
-        $thread->resetVisits();
+        $thread->visits()->record();
 
-        $this->get($thread->path());
-
-        $this->assertEquals(1, $thread->visits());
+        $this->assertEquals(1, $thread->visits()->count());
     }
 }
