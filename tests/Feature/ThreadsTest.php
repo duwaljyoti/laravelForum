@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Notifications\ThreadWasUpdated;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -97,5 +98,22 @@ class ThreadsTest extends TestCase
             ThreadWasUpdated::class
         );
 
+    }
+
+    public function testItShouldGiveThreadNumberOfVisits()
+    {
+        $thread = create('App\Thread');
+        $thread->recordsVisit();
+
+        $thread->resetVisits();
+        $this->assertSame(0, $thread->visits());
+
+        $thread->recordsVisit();
+
+        $thread->resetVisits();
+
+        $this->get($thread->path());
+
+        $this->assertEquals(1, $thread->visits());
     }
 }

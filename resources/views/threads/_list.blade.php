@@ -27,6 +27,9 @@
             </article>
             <hr>
         </div>
+        <div class="panel-footer">
+            {{ $thread->visits() }} visits
+        </div>
     </div>
 @empty
     No Relevant Threads at the moment

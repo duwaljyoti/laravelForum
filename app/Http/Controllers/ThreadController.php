@@ -40,9 +40,10 @@ class ThreadController extends Controller
      * @param Channel $channel
      * @param ThreadFilters $filters
      *
+     * @param TrendingController $trending
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel, ThreadFilters $filters)
+    public function index(Channel $channel, ThreadFilters $filters, TrendingController $trending)
     {
         $threads = $this->getThreads($channel, $filters);
 
@@ -50,7 +51,9 @@ class ThreadController extends Controller
             return $threads;
         }
 
-        return view('threads.index', compact('threads'));
+        $trendingThreads = $trending->get();
+
+        return view('threads.index', compact('threads', 'trendingThreads'));
     }
 
     /**
@@ -94,11 +97,15 @@ class ThreadController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($channel, Thread $thread)
+    public function show($channel, Thread $thread, TrendingController $trending)
     {
         if(auth()->check()) {
             auth()->user()->read($thread);
         }
+
+        $thread->recordsVisit();
+
+        $trending->push($thread);
 
         return view('threads.show', compact('thread'));
     }
