@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Thread;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ReadThreadTest extends TestCase
 {
 	use DatabaseMigrations;
-
 
 	public function setUp()
 	{
@@ -120,5 +120,16 @@ class ReadThreadTest extends TestCase
 //            \Carbon\Carbon::now());
 //        dd($this->thread->updated_at, cache($key));
         $this->assertFalse($this->thread->hasUpdatesFor(auth()->user()));
+    }
+
+    public function testACountShouldIncreaseOnEveryThreadVisit()
+    {
+        $thread = create(Thread::class);
+
+        $this->assertEquals(0, $thread->fresh()->visits);
+
+        $this->get($thread->path());
+
+        $this->assertEquals(1, $thread->fresh()->visits);
     }
 }
