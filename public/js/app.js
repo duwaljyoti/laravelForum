@@ -57977,7 +57977,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	props: ['message'],
 	data: function data() {
 		return {
-			messageBody: '',
+			messageBody: this.message,
 			type: 'success',
 			show: false
 		};
@@ -57986,7 +57986,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		var _this = this;
 
 		if (this.message) {
-			this.flash(this.message);
+			this.flash();
 		}
 
 		window.events.$on('flash', function (data) {
@@ -57996,10 +57996,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 	methods: {
 		flash: function flash(data) {
-			this.messageBody = data.message;
+			if (data) {
+				this.messageBody = data.message;
+				this.type = data.type;
+			}
 			this.show = true;
-			this.type = data.type;
-
 			this.hide();
 		},
 		hide: function hide() {

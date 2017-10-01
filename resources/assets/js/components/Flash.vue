@@ -14,14 +14,14 @@
 		props: ['message'],
 		data() {
 			return {
-				messageBody: '',
+				messageBody: this.message,
 				type: 'success',
 				show: false
 			}
 		},
 		created() {
 			if(this.message) {
-				this.flash(this.message);
+				this.flash();
 			}
 
             window.events.$on(
@@ -30,11 +30,12 @@
 		},
 		methods: {
 			flash(data) {
-				this.messageBody = data.message;
-				this.show = true;
-				this.type = data.type;
-
-				this.hide();
+			  if (data) {
+                this.messageBody = data.message;
+                this.type = data.type;
+              }
+              this.show = true;
+              this.hide();
 			},
 
 			hide() {

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Thread;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Activity;
@@ -33,8 +35,11 @@ class CreateThreadTest extends TestCase
 
     public function testAnAuthenticatedUserCanCreateThread()
     {
+
         //Given we have an authenticated user
-    	$this->be(factory('App\User')->create());
+    	$this->be(factory('App\User')->create(['confirmed' => true]));
+
+    	$this->signIn();
 
     	$thread = make('App\Thread');
 
@@ -44,6 +49,34 @@ class CreateThreadTest extends TestCase
     	$this->get($response->headers->get('Location'))
             ->assertSee($thread->title)
     		->assertSee($thread->body);
+    }
+
+    public function testAnAuthenticatedButUnConfirmedUserShouldBeRedirectedToThreadListingPageOnTryingToStoreThreads()
+    {
+        $this->publishThread()
+            ->assertRedirect('/threads')
+            ->assertSessionHas('flash', 'You must first confirm your email address.');
+
+//        $this->signIn();
+//        $thread = create(Thread::class);
+//        create(User::class, [
+//            'confirmed' => 1
+//        ]);
+//        $this->expectException(\Exception::class);
+//        $this->post('/threads', $thread->toArray());
+    }
+
+    public function testAnAuthenticatedAndConfirmedUserCanCreateThread()
+    {
+        $user = create(User::class, ['confirmed' => 1]);
+        $this->signIn($user);
+        $thread = make(Thread::class);
+
+        $response = $this->post('/threads', $thread->toArray());
+        $this->assertDatabaseHas('threads', ['title' => $thread->title]);
+
+        $this->get($response->headers->get('location'))
+            ->assertSee($thread->title);
     }
 
     public function testATitleForThreadCannotBeEmpty()

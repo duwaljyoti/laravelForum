@@ -30,7 +30,7 @@ Route::get('/threads/create', [
 	'uses' => 'ThreadController@create'
 ]);
 
-Route::post('/threads', 'ThreadController@store');
+Route::post('/threads', 'ThreadController@store')->middleware('isConfirmed');
 
 Route::get('/threads/{channel}/{thread}', 'ThreadController@show');
 
