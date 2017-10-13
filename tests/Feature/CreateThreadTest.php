@@ -33,6 +33,14 @@ class CreateThreadTest extends TestCase
 
     }
 
+    public function testAnAuthenticatedUserMustVerifyEmailBeforePublishingThread()
+    {
+        $this->publishThread()
+            ->assertRedirect('/threads')
+            ->assertSessionHas('flash', 'You must first confirm your email address.');
+    }
+
+
     public function testAnAuthenticatedUserCanCreateThread()
     {
 

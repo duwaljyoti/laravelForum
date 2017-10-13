@@ -65,3 +65,5 @@ Route::get('api/users', 'Api\UserController@index');
 Route::post('api/users/{user}/avatar', 'Api\AvatarController@store')
     ->middleware('auth')
     ->name('upload-avatar');
+
+Route::get('register/confirm', 'Api\RegisterConfirmController@confirm');
