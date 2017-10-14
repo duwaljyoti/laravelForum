@@ -11,8 +11,6 @@
 |
 */
 
-//Done up to 18-A-User-Can-Favorite-Any-Reply
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -21,9 +19,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-
-// Route::resource('/threads', 'ThreadController');
-Route::get('/threads', 'ThreadController@index');
+Route::get('/threads', 'ThreadController@index')->name('threads');
 
 Route::get('/threads/create', [
 	'as' => 'create.thread',
@@ -66,4 +62,5 @@ Route::post('api/users/{user}/avatar', 'Api\AvatarController@store')
     ->middleware('auth')
     ->name('upload-avatar');
 
-Route::get('register/confirm', 'Api\RegisterConfirmController@confirm');
+Route::get('register/confirm', 'Api\RegisterConfirmController@confirm')
+    ->name('register.confirm');

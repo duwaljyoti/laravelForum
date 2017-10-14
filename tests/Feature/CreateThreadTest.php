@@ -23,7 +23,7 @@ class CreateThreadTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAGuestUserMayCreateThreadTest()
+    public function testAGuestUserMayNotCreateThread()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
 
@@ -35,19 +35,20 @@ class CreateThreadTest extends TestCase
 
     public function testAnAuthenticatedUserMustVerifyEmailBeforePublishingThread()
     {
-        $this->publishThread()
-            ->assertRedirect('/threads')
-            ->assertSessionHas('flash', 'You must first confirm your email address.');
+        $this->withExceptionHandling();
+        $thread = make(Thread::class, ['title' => null])->toArray();
+        $this->signIn(factory(User::class)->states('unConfirmed')->create());
+        $response = $this->post(route('threads'), $thread);
+        $response->assertRedirect(route('threads'))
+            ->assertSessionHas('flash', 'You must first confirm your email address.')
+        ;
     }
 
 
-    public function testAnAuthenticatedUserCanCreateThread()
+    public function AnAuthenticatedUserCanCreateThread()
     {
-
         //Given we have an authenticated user
-    	$this->be(factory('App\User')->create(['confirmed' => true]));
-
-    	$this->signIn();
+    	$this->signIn(factory(User::class)->states('confirmedTrue')->create());
 
     	$thread = make('App\Thread');
 
@@ -61,8 +62,10 @@ class CreateThreadTest extends TestCase
 
     public function testAnAuthenticatedButUnConfirmedUserShouldBeRedirectedToThreadListingPageOnTryingToStoreThreads()
     {
-        $this->publishThread()
-            ->assertRedirect('/threads')
+        $this->signIn(factory(User::class)->states('unConfirmed')->create());
+
+        $this->post(route('threads'), [])
+            ->assertRedirect(route('threads'))
             ->assertSessionHas('flash', 'You must first confirm your email address.');
 
 //        $this->signIn();
@@ -89,27 +92,22 @@ class CreateThreadTest extends TestCase
 
     public function testATitleForThreadCannotBeEmpty()
     {
-        $this->publishThread(['title' => null])
-            ->assertSessionHasErrors('title');
-    }
-
-    public function testABodyForThreadCannotBeEmpty()
-    {
-        $this->publishThread(['body' => null])
-            ->assertSessionHasErrors('body');
+        $thread = make(Thread::class, ['title' => null])->toArray();
+        $response = $this->publishThread($thread);
+        $response->assertSessionHasErrors('title');
     }
 
     public function testAThreadShouldHaveAValidChannel()
     {
+        $thread = make(Thread::class, ['channel_id' => null])->toArray();
+        $thread2 = make(Thread::class, ['channel_id' => 565656565656])->toArray();
 
-        $channel = factory('App\Channel', 2)->create();
-
-        $this->publishThread(['channel_id' => null])
+        $this->publishThread($thread)
             ->assertSessionHasErrors('channel_id');
 
-        $this->publishThread(['channel_id' => 888])
-            ->assertSessionHasErrors('channel_id');            
-    }   
+        $this->publishThread($thread2)
+            ->assertSessionHasErrors('channel_id');
+    }
 
 
     public function publishThread($overrides = [])
