@@ -30,7 +30,6 @@ class CreateThreadTest extends TestCase
         $thread = factory('App\Thread')->make();
 
         $this->post('/threads', $thread->toArray());
-
     }
 
     public function testAnAuthenticatedUserMustVerifyEmailBeforePublishingThread()
