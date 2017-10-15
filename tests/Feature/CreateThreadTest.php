@@ -85,7 +85,6 @@ class CreateThreadTest extends TestCase
         $response = $this->post('/threads', $thread->toArray());
         $this->assertDatabaseHas('threads', ['title' => $thread->title]);
 
-//        dd($response->headers->get('location'));
         $this->get($response->headers->get('location'))
             ->assertSee($thread->title);
     }
@@ -95,6 +94,19 @@ class CreateThreadTest extends TestCase
         $thread = make(Thread::class, ['title' => null])->toArray();
         $response = $this->publishThread($thread);
         $response->assertSessionHasErrors('title');
+    }
+
+    public function testAThreadSlugShouldBeIncrementedIfAlreadyExists()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class, ['title' => 'Hello World', 'slug' => 'hello-world']);
+        $this->assertEquals($thread->fresh()->slug, 'hello-world');
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('hello-world-2')->exists());
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('hello-world-3')->exists());
+
     }
 
     public function testAThreadShouldHaveAValidChannel()

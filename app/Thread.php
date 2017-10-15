@@ -15,7 +15,7 @@ class Thread extends Model
 
     protected $appends = ['isSubscribed'];
 
-    protected static function boot() 
+    protected static function boot()
     {
         parent::boot();
 
@@ -23,7 +23,7 @@ class Thread extends Model
             $builder->withCount('replies');
         });
 
-        static::deleting(function($thread) {
+        static::deleting(function ($thread) {
             $thread->replies->each->delete();
         });
     }
@@ -35,13 +35,13 @@ class Thread extends Model
 
     public function replies()
     {
-    	return $this->hasMany('App\Reply')
+        return $this->hasMany('App\Reply')
             ->with('owner');
     }
 
     public function creator()
     {
-    	return $this->belongsTo('App\User', 'user_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
     public function addReply($reply)
@@ -65,7 +65,7 @@ class Thread extends Model
 
     public function subscribe($userId = null)
     {
-        $subscription =  $this->subscription()->create([
+        $subscription = $this->subscription()->create([
             'user_id' => $userId ?: auth()->id()
         ]);
 
@@ -81,7 +81,7 @@ class Thread extends Model
     {
         $userId = auth()->id() ?: $userId;
 
-        return $this->subscription()->delete([ 'user_id' => $userId ]);
+        return $this->subscription()->delete(['user_id' => $userId]);
     }
 
     public function getIsSubscribedAttribute()
@@ -103,5 +103,35 @@ class Thread extends Model
 
         //compare it with the data we have saved in cache.
         return $this->updated_at > cache($key);
+    }
+
+    // confusing part
+    public function setSlugAttribute($value)
+    {
+        // we check if we already have a slug with the value we receive
+        // if we have it we will increment it
+        // or else we will just return the slug.
+
+        if (static::where('slug', $slug = str_slug($value))->exists()) {
+            $slug = $this->incrementSlug($slug);
+        }
+
+        $this->attributes['slug'] = $slug;
+    }
+
+    private function incrementSlug($slug)
+    {
+        // we will now get the the model with the latest id since it was last created and get the slug..
+        $max = static::whereTitle($this->title)->latest('id')->value('slug');
+
+        // we check if the number we recieved is a number if it is we will try to increase it.
+        // if its not a number we will simply append 2 to it.
+        if (is_numeric(substr($max, -1))) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                return $matches[1] + 1;
+            }, $max);
+        }
+
+        return "{$slug}-2";
     }
 }
