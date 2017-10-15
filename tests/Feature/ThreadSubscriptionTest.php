@@ -24,9 +24,9 @@ class ThreadSubscriptionTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread');
-        $this->post('/threads/' . $thread->channel->id . '/' . $thread->id . '/subscribe');
+        $this->post('/threads/' . $thread->channel->id . '/' . $thread->slug . '/subscribe');
         $this->assertTrue($thread->isSubscribed);
-        $this->delete('/threads/' . $thread->channel->id . '/' . $thread->id . '/subscribe');
+        $this->delete('/threads/' . $thread->channel->id . '/' . $thread->slug . '/subscribe');
         $this->assertFalse($thread->isSubscribed);
 
     }

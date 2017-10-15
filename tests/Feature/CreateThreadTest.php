@@ -85,6 +85,7 @@ class CreateThreadTest extends TestCase
         $response = $this->post('/threads', $thread->toArray());
         $this->assertDatabaseHas('threads', ['title' => $thread->title]);
 
+//        dd($response->headers->get('location'));
         $this->get($response->headers->get('location'))
             ->assertSee($thread->title);
     }

@@ -29,7 +29,7 @@ class ThreadsTest extends TestCase
 
     public function testAUserCanViewSingleThread()
     {
-        $this->get('/threads/test-channel/' . $this->thread->id)
+        $this->get('/threads/test-channel/' . $this->thread->slug)
             ->assertSee($this->thread->title);
     }
 

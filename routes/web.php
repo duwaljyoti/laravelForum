@@ -64,3 +64,9 @@ Route::post('api/users/{user}/avatar', 'Api\AvatarController@store')
 
 Route::get('register/confirm', 'Auth\RegisterConfirmController@confirm')
     ->name('register.confirm');
+
+Route::get('ctwf', function() {
+   factory(\App\Thread::class, 30)->create();
+
+   return redirect(route('threads'))->with('flash', 'Threads created with seeder');
+});

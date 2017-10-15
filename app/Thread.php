@@ -30,7 +30,7 @@ class Thread extends Model
 
     public function path()
     {
-        return "/threads/{$this->channel->slug}/{$this->id}";
+        return "/threads/{$this->channel->slug}/{$this->slug}";
     }
 
     public function replies()
@@ -89,6 +89,11 @@ class Thread extends Model
         return $this->subscription()
             ->where('user_id', auth()->id())
             ->exists();
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     public function hasUpdatesFor($user)

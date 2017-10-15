@@ -39,6 +39,7 @@ $factory->define(App\Thread::class, function( $faker) {
 			return factory('App\Channel')->create()->id;
 		},
 		'title' => $faker->sentence,
+		'slug' => str_slug($faker->sentence),
 		'body' => $faker->paragraph,
 	];
 });

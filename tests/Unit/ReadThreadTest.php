@@ -17,12 +17,12 @@ class ReadThreadTest extends TestCase
 		$this->thread = factory('App\Thread')->create();;
 	}
 
-    public function testAThread()
+    public function testAThreadHasAValidPath()
     {
         $thread = create('App\Thread');
 
         // dd('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread);
-        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
+        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->slug, $thread->path());
     }
 
     public function testAThreadHasReplies()
@@ -61,8 +61,6 @@ class ReadThreadTest extends TestCase
         //second has two replies 
         //third has three replies
         //the third should display first
-
-        $threadwithNoReply = $this->thread;
 
         $threadwithFourReply = create('App\Thread');
         create('App\Reply', ['thread_id' => $threadwithFourReply->id], 4);
@@ -104,7 +102,7 @@ class ReadThreadTest extends TestCase
         $thread = $this->thread;
         $this->assertFalse(!!$thread->isSubscribed);
 
-        $this->post('/threads/' . $thread->channel->id . '/' . $thread->id . '/subscribe');
+        $this->post('/threads/' . $thread->channel->id . '/' . $thread->slug . '/subscribe');
 
         $this->assertTrue(!!$thread->isSubscribed);
     }
@@ -118,7 +116,6 @@ class ReadThreadTest extends TestCase
 //        cache()->forever(
 //            auth()->user()->visitedThreadCacheKey($this->thread),
 //            \Carbon\Carbon::now());
-//        dd($this->thread->updated_at, cache($key));
         $this->assertFalse($this->thread->hasUpdatesFor(auth()->user()));
     }
 
