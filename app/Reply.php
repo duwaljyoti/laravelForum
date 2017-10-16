@@ -68,4 +68,9 @@ class Reply extends Model
 
         // testcases => @JaneDoe!/,/?/.   $jane.doe
     }
+
+    public function isBest()
+    {
+        return $this->thread->best_reply_id == $this->id;
+    }
 }

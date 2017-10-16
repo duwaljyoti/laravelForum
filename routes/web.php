@@ -70,3 +70,5 @@ Route::get('ctwf', function() {
 
    return redirect(route('threads'))->with('flash', 'Threads created with seeder');
 });
+
+Route::post('replies/{reply}/best', 'BestReplyController@store')->name('best-reply.store');
