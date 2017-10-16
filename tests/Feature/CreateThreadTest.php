@@ -100,13 +100,31 @@ class CreateThreadTest extends TestCase
     {
         $this->signIn();
 
-        $thread = create(Thread::class, ['title' => 'Hello World', 'slug' => 'hello-world']);
-        $this->assertEquals($thread->fresh()->slug, 'hello-world');
-        $this->post(route('threads'), $thread->toArray());
-        $this->assertTrue(Thread::whereSlug('hello-world-2')->exists());
-        $this->post(route('threads'), $thread->toArray());
-        $this->assertTrue(Thread::whereSlug('hello-world-3')->exists());
+        create(Thread::class, [], 2);
+        $thread = create(Thread::class, ['title' => 'Hello World']);
+        $this->assertEquals($thread->fresh()->slug, 'hello-world-3');
 
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('hello-world-4')->exists());
+
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('hello-world-5')->exists());
+    }
+
+    public function testAProperSlugShouldBeProvidedToAThread()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class, ['title' => 'hello world 24'])->toArray();
+
+        $this->assertTrue(Thread::whereSlug('hello-world-24-1')->exists());
+        $this->post(route('threads'), $thread);
+        $this->assertTrue(Thread::whereSlug('hello-world-24-2')->exists());
+
+        $thread = $this->postJson(route('threads'), $thread)
+            ->json();
+
+        $this->assertTrue(Thread::whereSlug($thread['slug'])->exists());
     }
 
     public function testAThreadShouldHaveAValidChannel()

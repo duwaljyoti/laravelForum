@@ -26,6 +26,10 @@ class Thread extends Model
         static::deleting(function ($thread) {
             $thread->replies->each->delete();
         });
+
+        static::created(function ($thread) {
+            $thread->update(['slug' => str_slug($thread->title) . "-" . $thread->id]);
+        });
     }
 
     public function path()
@@ -112,26 +116,10 @@ class Thread extends Model
         // if we have it we will increment it
         // or else we will just return the slug.
 
-        if (static::where('slug', $slug = str_slug($value))->exists()) {
-            $slug = $this->incrementSlug($slug);
+        if (static::whereSlug($slug = str_slug($value))->exists()) {
+            $slug = "{$slug}-{$this->id}";
         }
 
         $this->attributes['slug'] = $slug;
-    }
-
-    private function incrementSlug($slug)
-    {
-        // we will now get the the model with the latest id since it was last created and get the slug..
-        $max = static::whereTitle($this->title)->latest('id')->value('slug');
-
-        // we check if the number we recieved is a number if it is we will try to increase it.
-        // if its not a number we will simply append 2 to it.
-        if (is_numeric(substr($max, -1))) {
-            return preg_replace_callback('/(\d+)$/', function ($matches) {
-                return $matches[1] + 1;
-            }, $max);
-        }
-
-        return "{$slug}-2";
     }
 }
