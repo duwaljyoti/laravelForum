@@ -50,7 +50,7 @@
 				editing: false,
 				reply: this.data,
 				id: this.data.id,
-			    isBest: false,
+			    isBest: this.data.isBest,
 			}
 		},
 		computed: {
@@ -84,10 +84,18 @@
 					})
 			},
 		    toggleBest() {
-			  this.isBest = true;
+			  window.events.$emit('best-reply-selected', this.data.id);
+			  axios.post(`/replies/${this.reply.id}/best`)
+				.then((response) => {
+
+				}).catch((exception) => {
+			  });
 			},
 		},
-		mounted() {
+		created() {
+		  window.events.$on('best-reply-selected', (id) => {
+		    this.isBest = this.reply.id === id;
+		  });
 		}
 	}
 </script>

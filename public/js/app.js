@@ -58345,7 +58345,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			editing: false,
 			reply: this.data,
 			id: this.data.id,
-			isBest: false
+			isBest: this.data.isBest
 		};
 	},
 
@@ -58379,10 +58379,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			});
 		},
 		toggleBest: function toggleBest() {
-			this.isBest = true;
+			window.events.$emit('best-reply-selected', this.data.id);
+			axios.post('/replies/' + this.reply.id + '/best').then(function (response) {}).catch(function (exception) {});
 		}
 	},
-	mounted: function mounted() {}
+	created: function created() {
+		var _this3 = this;
+
+		window.events.$on('best-reply-selected', function (id) {
+			_this3.isBest = _this3.reply.id === id;
+		});
+	}
 });
 
 /***/ }),

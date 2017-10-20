@@ -38,8 +38,7 @@
                         </div>
                     </div>
                     <hr>
-
-                    <replies 
+                    <replies
                         @reply-created="replyCount++"
                         @removed="replyCount--"
                     ></replies>
