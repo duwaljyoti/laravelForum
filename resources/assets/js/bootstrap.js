@@ -26,12 +26,23 @@ window.Vue = require('vue');
 window.axios.defaults.headers.common['X-CSRF-TOKEN'] = window.App.csrfToken;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+let authorizations = require('./authorizations.js');
 
-Vue.prototype.authorize = function(handler) {
+Vue.prototype.signedIn = window.App.signedIn;
+
+Vue.prototype.authorize = function(...params) {
   let user = window.App.loggedUser;
-  
-  return user ? handler(user) : false;
-}
+  if (! user) return false;
+
+  return (typeof(params[0]) === 'string') ? authorizations[params[0]](params[1]) : params[0](user);
+
+};
+
+window.events = new Vue();
+
+window.flash = function ( message, type = 'success') {
+  window.events.$emit('flash', { message, type });
+};
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -46,9 +57,3 @@ Vue.prototype.authorize = function(handler) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
-
-window.events = new Vue();
-
-window.flash = function ( message, type = 'success') {
-	window.events.$emit('flash', { message, type });
-}

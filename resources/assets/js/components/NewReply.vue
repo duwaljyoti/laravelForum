@@ -1,6 +1,6 @@
 <template>
 	<div>
-	    <div class="form-group" v-if='isSignedIn'>
+	    <div class="form-group" v-if='signedIn'>
 	        <textarea 
 	        	rows = '5'
 	        	name = 'body'
@@ -46,11 +46,6 @@
 				    	console.log(error.response);
 				    	flash(error.response.data, 'danger');
 					})
-			}
-		},
-		computed: {
-			isSignedIn: function() {
-				return window.App.signedIn;
 			}
 		},
 		mounted() {

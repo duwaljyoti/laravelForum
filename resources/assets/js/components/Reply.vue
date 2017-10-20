@@ -1,13 +1,13 @@
 <template>
-	<div :id = "'reply-' + id" class="panel panel-default">
+	<div :id = "'reply-' + id" class="panel" :class="[ isBest ? 'panel-success' : 'panel-default' ]">
 	     <div class="panel-heading">
 	     	<div class="level">
 		     	<h5 class="flex">
-			     	<a :href = "'/profile/' + data.owner.name" v-text="data.owner.name"></a>
+			     	<a :href = "'/profile/' + reply.owner.name" v-text="reply.owner.name"></a>
 			     	said <span v-text='ago'></span>
 			    </h5>
 			    <div v-if='signedIn'>
-			    	<favourite :reply="data"></favourite>
+			    	<favourite :reply="reply"></favourite>
 			    </div> 	
 	     	</div>
 
@@ -16,7 +16,7 @@
 	      	<div v-if='editing'>
 				<form @submit="update">
 					<div class="form-group">
-					<textarea class='form-control' v-model='reply' required>
+					<textarea class='form-control' v-model='reply.body' required>
 					</textarea>
 					</div>
 					<button class='btn btn-primary btn-xs'>Update</button>
@@ -24,11 +24,14 @@
 				</form>
 			</div>
 
-	      	<div v-else v-html='reply'></div>
+	      	<div v-else v-html='reply.body'></div>
 	     </div>
-	     <div class="panel-footer level" v-if='canUpdate'>
-	     	<button class='btn-xs mr-1' @click='editing = true'>Edit</button>
-	     	<button class='btn btn-default btn-xs btn-danger' @click='destroy'>Delete</button>
+	     <div class="panel-footer level">
+			 <div v-if="authorize('updateReply', data)">
+				 <button class='btn-xs mr-1' @click='editing = true'>Edit</button>
+				 <button class='btn btn-default btn-xs btn-danger' @click='destroy'>Delete</button>
+			 </div>
+	     	<button class='btn btn-default btn-xs btn-danger ml-a' @click="toggleBest" v-show="! isBest">Best Reply</button>
 		</div>
 	</div>
 </template>
@@ -45,25 +48,20 @@
 		data() {
 			return {
 				editing: false,
-				reply: this.data.body,
-				id: this.data.id
+				reply: this.data,
+				id: this.data.id,
+			    isBest: false,
 			}
 		},
 		computed: {
-			signedIn: function() {
-				return window.App.signedIn
-			},
-			canUpdate: function() {
-				return this.authorize(user =>  this.data.user_id == user.id)
-			},
 			ago: function() {
 				return moment(this.data.created_at).fromNow()
 			}
 		},
 		methods: {
-			update(newReply) {
-				axios.patch('/replies/' + this.data.id,
-					 { body: this.reply })
+			update() {
+				axios.patch('/replies/' + this.reply.id,
+					 { body: this.reply.body })
 					.then((response) => {
 						if(response.status === 200) {
 							flash('You have successfully edited your reply');
@@ -75,7 +73,7 @@
 					})
 			},
 			destroy() {
-				axios.delete("/replies/" + this.data.id)
+				axios.delete("/replies/" + this.reply.id)
 					.then((response) => {
 						if(response.status == 200) {
 							this.$emit('deleted')
@@ -84,7 +82,10 @@
 					.catch((error) => {
 						alert(error)
 					})
-			}
+			},
+		    toggleBest() {
+			  this.isBest = true;
+			},
 		},
 		mounted() {
 		}
