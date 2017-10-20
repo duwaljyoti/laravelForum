@@ -61,4 +61,15 @@ class ReplyTest extends TestCase
         $reply->thread->update(['best_reply_id' => $reply->id]);
         $this->assertTrue($reply->isBest());
     }
+
+    public function testOnDeletionOfBestReplyItShouldNullTheBestReplyIdColumnOfThread()
+    {
+        $this->signIn();
+        $reply = create(Reply::class, ['user_id' => auth()->id()]);
+        $thread = $reply->thread;
+        $reply->thread->markAsBestReply($reply);
+        $this->assertEquals($thread->best_reply_id, $reply->id);
+        $this->delete(route('reply.destroy', ['id' => $reply->id]));
+        $this->assertNull($thread->fresh()->best_reply_id);
+    }
 }
