@@ -57457,8 +57457,10 @@ var user = window.App.loggedUser;
  */
 
 module.exports = {
-  updateReply: function updateReply(reply) {
-    return user.id === reply.user_id;
+  owns: function owns(model) {
+    var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
+
+    return model[prop] === user.id;
   }
 };
 
@@ -58332,26 +58334,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
 
 // confusing => how does it work with the blade component?
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['data'],
+	props: ['reply'],
 	components: { Favourite: __WEBPACK_IMPORTED_MODULE_0__Favourite_vue___default.a },
 	data: function data() {
 		return {
 			editing: false,
-			reply: this.data,
-			id: this.data.id,
-			isBest: this.data.isBest
+			id: this.reply.id,
+			isBest: this.reply.isBest
 		};
 	},
 
 	computed: {
 		ago: function ago() {
-			return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.data.created_at).fromNow();
+			return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).fromNow();
 		}
 	},
 	methods: {
@@ -58379,7 +58382,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			});
 		},
 		toggleBest: function toggleBest() {
-			window.events.$emit('best-reply-selected', this.data.id);
+			window.events.$emit('best-reply-selected', this.reply.id);
 			axios.post('/replies/' + this.reply.id + '/best').then(function (response) {}).catch(function (exception) {});
 		}
 	},
@@ -58838,9 +58841,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     domProps: {
       "innerHTML": _vm._s(_vm.reply.body)
     }
-  })]), _vm._v(" "), _c('div', {
+  })]), _vm._v(" "), (_vm.authorize('owns', _vm.reply) || _vm.authorize('owns', _vm.reply.thread)) ? _c('div', {
     staticClass: "panel-footer level"
-  }, [(_vm.authorize('updateReply', _vm.data)) ? _c('div', [_c('button', {
+  }, [(_vm.authorize('owns', _vm.reply)) ? _c('div', [_c('button', {
     staticClass: "btn-xs mr-1",
     on: {
       "click": function($event) {
@@ -58852,18 +58855,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.destroy
     }
-  }, [_vm._v("Delete")])]) : _vm._e(), _vm._v(" "), _c('button', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (!_vm.isBest),
-      expression: "! isBest"
-    }],
+  }, [_vm._v("Delete")])]) : _vm._e(), _vm._v(" "), (_vm.authorize('owns', _vm.reply.thread)) ? _c('button', {
     staticClass: "btn btn-default btn-xs btn-danger ml-a",
     on: {
       "click": _vm.toggleBest
     }
-  }, [_vm._v("Best Reply")])])])
+  }, [_vm._v("Best Reply")]) : _vm._e()]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -60718,7 +60715,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       key: reply.id
     }, [_c('reply', {
       attrs: {
-        "data": reply
+        "reply": reply
       },
       on: {
         "deleted": function($event) {

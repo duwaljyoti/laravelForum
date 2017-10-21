@@ -26,12 +26,14 @@
 
 	      	<div v-else v-html='reply.body'></div>
 	     </div>
-	     <div class="panel-footer level">
-			 <div v-if="authorize('updateReply', data)">
+	     <div class="panel-footer level" v-if="authorize('owns', reply) || authorize('owns', reply.thread)">
+			 <div v-if="authorize('owns', reply)">
 				 <button class='btn-xs mr-1' @click='editing = true'>Edit</button>
 				 <button class='btn btn-default btn-xs btn-danger' @click='destroy'>Delete</button>
 			 </div>
-	     	<button class='btn btn-default btn-xs btn-danger ml-a' @click="toggleBest" v-show="! isBest">Best Reply</button>
+	     	<button class='btn btn-default btn-xs btn-danger ml-a'
+					@click="toggleBest" v-if="authorize('owns', reply.thread)"
+			>Best Reply</button>
 		</div>
 	</div>
 </template>
@@ -43,19 +45,18 @@
 
 	// confusing => how does it work with the blade component?
 	export default {
-		props: ['data'],
+		props: ['reply'],
 		components: { Favourite },
 		data() {
 			return {
 				editing: false,
-				reply: this.data,
-				id: this.data.id,
-			    isBest: this.data.isBest,
+				id: this.reply.id,
+			    isBest: this.reply.isBest,
 			}
 		},
 		computed: {
 			ago: function() {
-				return moment(this.data.created_at).fromNow()
+				return moment(this.reply.created_at).fromNow()
 			}
 		},
 		methods: {
@@ -84,7 +85,7 @@
 					})
 			},
 		    toggleBest() {
-			  window.events.$emit('best-reply-selected', this.data.id);
+			  window.events.$emit('best-reply-selected', this.reply.id);
 			  axios.post(`/replies/${this.reply.id}/best`)
 				.then((response) => {
 

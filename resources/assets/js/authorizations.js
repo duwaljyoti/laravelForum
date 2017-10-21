@@ -5,7 +5,7 @@ let user = window.App.loggedUser;
  */
 
 module.exports = {
-  updateReply(reply) {
-    return user.id === reply.user_id;
+  owns(model, prop = 'user_id') {
+    return model[prop] === user.id;
   }
 };
