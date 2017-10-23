@@ -13,6 +13,7 @@ class ThreadController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->only(['store', 'create', 'destroy']);
+        $this->middleware('administrator')->only(['update']);
     }
 
     /**
@@ -132,9 +133,9 @@ class ThreadController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thread $thread)
+    public function update($channel, Thread $thread)
     {
-        //
+        
     }
 
     /**

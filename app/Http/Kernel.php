@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Administrator;
 use App\Http\Middleware\IsConfirmed;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -58,5 +59,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'isConfirmed' => IsConfirmed::class,
+        'administrator' => Administrator::class,
     ];
 }

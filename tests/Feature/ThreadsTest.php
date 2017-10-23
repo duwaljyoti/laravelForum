@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Notifications\ThreadWasUpdated;
+use App\Thread;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
@@ -98,5 +99,12 @@ class ThreadsTest extends TestCase
             ThreadWasUpdated::class
         );
 
+    }
+
+    public function testAThreadMayBeLocked()
+    {
+        $this->assertFalse($this->thread->locked);
+        $this->thread->lock();
+        $this->assertTrue($this->thread->locked);
     }
 }
