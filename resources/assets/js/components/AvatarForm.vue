@@ -14,39 +14,39 @@
 </template>
 
 <script>
-    import ImageUpload from './ImageUpload.vue'
+  import ImageUpload from './ImageUpload.vue'
 
-    export default {
-      props: ['data'],
-      components: { ImageUpload },
-      data() {
-        return {
-          avatar: this.data.avatar_path,
-        }
+  export default {
+    props: ['data'],
+    components: {ImageUpload},
+    data() {
+      return {
+        avatar: this.data.avatar_path,
+      }
+    },
+    computed: {
+      canUpdate() {
+        return this.authorize(user => this.data.id === user.id)
+      }
+    },
+    methods: {
+      onLoad(avatar) {
+        this.avatar = avatar.src;
+        this.persist(avatar.file);
       },
-      computed: {
-        canUpdate() {
-          return this.authorize(user => this.data.id === user.id)
-        }
-      },
-      methods: {
-        onLoad(avatar) {
-          this.avatar = avatar.src;
-          this.persist(avatar.file);
-        },
 
-        persist(avatar) {
-          const data = new FormData();
-          data.append('avatar', avatar);
+      persist(avatar) {
+        const data = new FormData();
+        data.append('avatar', avatar);
 
-          axios.post(`/api/users/${this.data.id}/avatar`, data)
-            .then(() => {
-                flash('Avatar Uploaded Succesfully.');
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      },
-    }
+        axios.post(`/api/users/${this.data.id}/avatar`, data)
+          .then(() => {
+            flash('Avatar Uploaded Succesfully.');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+  }
 </script>

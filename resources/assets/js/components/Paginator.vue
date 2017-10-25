@@ -15,43 +15,43 @@
 </template>
 
 <script>
-    export default {
-        props: ['dataSet'],
+  export default {
+    props: ['dataSet'],
 
-        data() {
-            return {
-                currentPage: 1,
-                nextUrl: false,
-                previousUrl: false,
-            }
-        },
+    data() {
+      return {
+        currentPage: 1,
+        nextUrl: false,
+        previousUrl: false,
+      }
+    },
 
-        watch: {
-          dataSet() {
-              this.currentPage = this.dataSet.current_page;
-              this.previousUrl= this.dataSet.prev_page_url;
-              this.nextUrl = this.dataSet.next_page_url;
-          },
-          currentPage() {
-              this.broadcast();
-              this.updateUrl();
-          }
-        },
+    watch: {
+      dataSet() {
+        this.currentPage = this.dataSet.current_page;
+        this.previousUrl = this.dataSet.prev_page_url;
+        this.nextUrl = this.dataSet.next_page_url;
+      },
+      currentPage() {
+        this.broadcast();
+        this.updateUrl();
+      }
+    },
 
-        computed: {
-            shouldShowPaginator() {
-                return !!this.nextUrl || !!this.previousUrl;
-            }
-        },
+    computed: {
+      shouldShowPaginator() {
+        return !!this.nextUrl || !!this.previousUrl;
+      }
+    },
 
-        methods: {
-            broadcast() {
-                this.$emit('pageUpdated', this.currentPage);
-            },
+    methods: {
+      broadcast() {
+        this.$emit('pageUpdated', this.currentPage);
+      },
 
-            updateUrl() {
-                history.pushState(null, null, '?page=' + this.currentPage);
-            }
-        }
+      updateUrl() {
+        history.pushState(null, null, '?page=' + this.currentPage);
+      }
     }
+  }
 </script>

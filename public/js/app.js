@@ -57531,9 +57531,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  }
 });
 
 /***/ }),
@@ -57644,7 +57644,7 @@ exports = module.exports = __webpack_require__(160)(undefined);
 
 
 // module
-exports.push([module.i, "\n.alert-flash {\n\tposition: fixed;\n\tright: 25px;\n\tbottom: 25px;\n}\n", ""]);
+exports.push([module.i, "\n.alert-flash {\n    position: fixed;\n    right: 25px;\n    bottom: 25px;\n}\n", ""]);
 
 // exports
 
@@ -58004,43 +58004,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['message'],
-	data: function data() {
-		return {
-			messageBody: this.message,
-			type: 'success',
-			show: false
-		};
-	},
-	created: function created() {
-		var _this = this;
+  props: ['message'],
+  data: function data() {
+    return {
+      messageBody: this.message,
+      type: 'success',
+      show: false
+    };
+  },
+  created: function created() {
+    var _this = this;
 
-		if (this.message) {
-			this.flash();
-		}
+    if (this.message) {
+      this.flash();
+    }
 
-		window.events.$on('flash', function (data) {
-			return _this.flash(data);
-		});
-	},
+    window.events.$on('flash', function (data) {
+      return _this.flash(data);
+    });
+  },
 
-	methods: {
-		flash: function flash(data) {
-			if (data) {
-				this.messageBody = data.message;
-				this.type = data.type;
-			}
-			this.show = true;
-			this.hide();
-		},
-		hide: function hide() {
-			var _this2 = this;
+  methods: {
+    flash: function flash(data) {
+      if (data) {
+        this.messageBody = data.message;
+        this.type = data.type;
+      }
+      this.show = true;
+      this.hide();
+    },
+    hide: function hide() {
+      var _this2 = this;
 
-			setTimeout(function () {
-				_this2.show = false;
-			}, 3000);
-		}
-	}
+      setTimeout(function () {
+        _this2.show = false;
+      }, 3000);
+    }
+  }
 });
 
 /***/ }),
@@ -58347,63 +58347,64 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
 
 // confusing => how does it work with the blade component?
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['reply'],
-	components: { Favourite: __WEBPACK_IMPORTED_MODULE_0__Favourite_vue___default.a },
-	data: function data() {
-		return {
-			editing: false,
-			id: this.reply.id,
-			isBest: this.reply.isBest
-		};
-	},
+  props: ['reply'],
+  components: { Favourite: __WEBPACK_IMPORTED_MODULE_0__Favourite_vue___default.a },
+  data: function data() {
+    return {
+      editing: false,
+      id: this.reply.id,
+      isBest: this.reply.isBest
+    };
+  },
 
-	computed: {
-		ago: function ago() {
-			return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).fromNow();
-		}
-	},
-	methods: {
-		update: function update() {
-			var _this = this;
+  computed: {
+    ago: function ago() {
+      return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).fromNow();
+    }
+  },
+  methods: {
+    update: function update() {
+      var _this = this;
 
-			axios.patch('/replies/' + this.reply.id, { body: this.reply.body }).then(function (response) {
-				if (response.status === 200) {
-					flash('You have successfully edited your reply');
-					_this.editing = false;
-				}
-			}).catch(function (error) {
-				flash(error.response.data, 'danger');
-			});
-		},
-		destroy: function destroy() {
-			var _this2 = this;
+      axios.patch('/replies/' + this.reply.id, { body: this.reply.body }).then(function (response) {
+        if (response.status === 200) {
+          flash('You have successfully edited your reply');
+          _this.editing = false;
+        }
+      }).catch(function (error) {
+        flash(error.response.data, 'danger');
+      });
+    },
+    destroy: function destroy() {
+      var _this2 = this;
 
-			axios.delete("/replies/" + this.reply.id).then(function (response) {
-				if (response.status == 200) {
-					_this2.$emit('deleted');
-				}
-			}).catch(function (error) {
-				alert(error);
-			});
-		},
-		toggleBest: function toggleBest() {
-			window.events.$emit('best-reply-selected', this.reply.id);
-			axios.post('/replies/' + this.reply.id + '/best').then(function (response) {}).catch(function (exception) {});
-		}
-	},
-	created: function created() {
-		var _this3 = this;
+      axios.delete("/replies/" + this.reply.id).then(function (response) {
+        if (response.status == 200) {
+          _this2.$emit('deleted');
+        }
+      }).catch(function (error) {
+        alert(error);
+      });
+    },
+    toggleBest: function toggleBest() {
+      window.events.$emit('best-reply-selected', this.reply.id);
+      axios.post('/replies/' + this.reply.id + '/best').then(function (response) {}).catch(function (exception) {});
+    }
+  },
+  created: function created() {
+    var _this3 = this;
 
-		window.events.$on('best-reply-selected', function (id) {
-			_this3.isBest = _this3.reply.id === id;
-		});
-	}
+    window.events.$on('best-reply-selected', function (id) {
+      _this3.isBest = _this3.reply.id === id;
+    });
+  }
 });
 
 /***/ }),
@@ -58462,41 +58463,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['reply'],
-	data: function data() {
-		return {
-			isFavourited: this.reply.isFavourited,
-			count: this.reply.favourites_count
-		};
-	},
-	mounted: function mounted() {},
+  props: ['reply'],
+  data: function data() {
+    return {
+      isFavourited: this.reply.isFavourited,
+      count: this.reply.favourites_count
+    };
+  },
+  mounted: function mounted() {},
 
-	computed: {
-		classes: function classes() {
-			return ['btn', this.isFavourited ? 'btn-primary' : 'btn-default'];
-		},
-		endpoint: function endpoint() {
-			return '/replies/' + this.reply.id + '/favourite';
-		}
-	},
-	methods: {
-		toggle: function toggle() {
-			return this.isFavourited ? this.destroy() : this.create();
-		},
-		destroy: function destroy() {
-			axios.delete(this.endpoint);
-			this.count--;
-			this.isFavourited = false;
-		},
-		create: function create() {
-			var _this = this;
+  computed: {
+    classes: function classes() {
+      return ['btn', this.isFavourited ? 'btn-primary' : 'btn-default'];
+    },
+    endpoint: function endpoint() {
+      return '/replies/' + this.reply.id + '/favourite';
+    }
+  },
+  methods: {
+    toggle: function toggle() {
+      return this.isFavourited ? this.destroy() : this.create();
+    },
+    destroy: function destroy() {
+      axios.delete(this.endpoint);
+      this.count--;
+      this.isFavourited = false;
+    },
+    create: function create() {
+      var _this = this;
 
-			axios.post(this.endpoint).then(function (response) {
-				_this.count++;
-				_this.isFavourited = true;
-			});
-		}
-	}
+      axios.post(this.endpoint).then(function (response) {
+        _this.count++;
+        _this.isFavourited = true;
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -58800,7 +58801,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     domProps: {
       "textContent": _vm._s(_vm.reply.owner.name)
     }
-  }), _vm._v("\n\t\t     \tsaid "), _c('span', {
+  }), _vm._v("\n                    said "), _c('span', {
     domProps: {
       "textContent": _vm._s(_vm.ago)
     }
@@ -58871,7 +58872,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.toggleBest
     }
-  }, [_vm._v("Best Reply")]) : _vm._e()]) : _vm._e()])
+  }, [_vm._v("Best Reply\n            ")]) : _vm._e()]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -58919,43 +58920,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	data: function data() {
-		return {
-			body: ''
-		};
-	},
+  data: function data() {
+    return {
+      body: ''
+    };
+  },
 
 
-	methods: {
-		saveReply: function saveReply() {
-			var _this = this;
+  methods: {
+    saveReply: function saveReply() {
+      var _this = this;
 
-			axios.post(location.pathname + '/replies', {
-				body: this.body
-			}).then(function (response) {
-				_this.body = '';
-				_this.$emit('created', response.data);
-				flash('Your Reply is posted');
-			}).catch(function (error) {
-				console.log(error.response);
-				flash(error.response.data, 'danger');
-			});
-		}
-	},
-	mounted: function mounted() {
-		$('#newReply').atwho({
-			at: "@",
-			delay: 300,
-			callbacks: {
-				remoteFilter: function remoteFilter(query, callback) {
-					console.log('being called from here');
-					$.getJSON("/api/users", { q: query }, function (usernames) {
-						callback(usernames);
-					});
-				}
-			}
-		});
-	}
+      axios.post(location.pathname + '/replies', {
+        body: this.body
+      }).then(function (response) {
+        _this.body = '';
+        _this.$emit('created', response.data);
+        flash('Your Reply is posted');
+      }).catch(function (error) {
+        console.log(error.response);
+        flash(error.response.data, 'danger');
+      });
+    }
+  },
+  mounted: function mounted() {
+    $('#newReply').atwho({
+      at: "@",
+      delay: 300,
+      callbacks: {
+        remoteFilter: function remoteFilter(query, callback) {
+          console.log('being called from here');
+          $.getJSON("/api/users", { q: query }, function (usernames) {
+            callback(usernames);
+          });
+        }
+      }
+    });
+  }
 });
 
 /***/ }),
@@ -60661,7 +60662,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "href": "/login"
     }
-  }, [_vm._v("\n\t    Please sign")]), _vm._v(" in to participate")])
+  }, [_vm._v("\n                    Please sign")]), _vm._v(" in to participate")])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -60677,27 +60678,27 @@ if (false) {
 
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = ({
-    data: function data() {
-        return {
-            items: ''
-        };
+  data: function data() {
+    return {
+      items: ''
+    };
+  },
+
+
+  methods: {
+    remove: function remove(index) {
+      this.items.splice(index, 1);
+
+      this.$emit('removed');
+
+      flash('Reply Was deleted');
     },
 
-
-    methods: {
-        remove: function remove(index) {
-            this.items.splice(index, 1);
-
-            this.$emit('removed');
-
-            flash('Reply Was deleted');
-        },
-
-        add: function add(items) {
-            this.items.push(items);
-            this.$emit('reply-created');
-        }
+    add: function add(items) {
+      this.items.push(items);
+      this.$emit('reply-created');
     }
+  }
 });
 
 /***/ }),
@@ -60707,13 +60708,13 @@ if (false) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = getParameterByName;
 function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 /***/ }),
@@ -60812,39 +60813,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['isSubscribed'],
+  props: ['isSubscribed'],
 
-    computed: {
-        classes: function classes() {
-            return this.subscribed ? 'btn btn-default' : 'btn btn-primary';
-        },
-        toDisplay: function toDisplay() {
-            return this.subscribed ? 'UnSubscribe' : 'Subscribe';
-        }
+  computed: {
+    classes: function classes() {
+      return this.subscribed ? 'btn btn-default' : 'btn btn-primary';
     },
-
-    methods: {
-        subscribe: function subscribe() {
-            var endPointType = this.subscribed ? 'delete' : 'post';
-            axios[endPointType](location.pathname + '/subscribe').then(function (response) {
-                console.log(response);
-            }).catch(function (error) {
-                console.log(error);
-            });
-
-            this.subscribed = !this.subscribed;
-
-            flash('You have subscribed succesfully');
-        }
-    },
-    data: function data() {
-        return {
-            subscribed: null
-        };
-    },
-    mounted: function mounted() {
-        this.subscribed = this.isSubscribed;
+    toDisplay: function toDisplay() {
+      return this.subscribed ? 'UnSubscribe' : 'Subscribe';
     }
+  },
+
+  methods: {
+    subscribe: function subscribe() {
+      var endPointType = this.subscribed ? 'delete' : 'post';
+      axios[endPointType](location.pathname + '/subscribe').then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+
+      this.subscribed = !this.subscribed;
+
+      flash('You have subscribed succesfully');
+    }
+  },
+  data: function data() {
+    return {
+      subscribed: null
+    };
+  },
+  mounted: function mounted() {
+    this.subscribed = this.isSubscribed;
+  }
 });
 
 /***/ }),
@@ -60934,43 +60935,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['dataSet'],
+  props: ['dataSet'],
 
-    data: function data() {
-        return {
-            currentPage: 1,
-            nextUrl: false,
-            previousUrl: false
-        };
+  data: function data() {
+    return {
+      currentPage: 1,
+      nextUrl: false,
+      previousUrl: false
+    };
+  },
+
+
+  watch: {
+    dataSet: function dataSet() {
+      this.currentPage = this.dataSet.current_page;
+      this.previousUrl = this.dataSet.prev_page_url;
+      this.nextUrl = this.dataSet.next_page_url;
     },
-
-
-    watch: {
-        dataSet: function dataSet() {
-            this.currentPage = this.dataSet.current_page;
-            this.previousUrl = this.dataSet.prev_page_url;
-            this.nextUrl = this.dataSet.next_page_url;
-        },
-        currentPage: function currentPage() {
-            this.broadcast();
-            this.updateUrl();
-        }
-    },
-
-    computed: {
-        shouldShowPaginator: function shouldShowPaginator() {
-            return !!this.nextUrl || !!this.previousUrl;
-        }
-    },
-
-    methods: {
-        broadcast: function broadcast() {
-            this.$emit('pageUpdated', this.currentPage);
-        },
-        updateUrl: function updateUrl() {
-            history.pushState(null, null, '?page=' + this.currentPage);
-        }
+    currentPage: function currentPage() {
+      this.broadcast();
+      this.updateUrl();
     }
+  },
+
+  computed: {
+    shouldShowPaginator: function shouldShowPaginator() {
+      return !!this.nextUrl || !!this.previousUrl;
+    }
+  },
+
+  methods: {
+    broadcast: function broadcast() {
+      this.$emit('pageUpdated', this.currentPage);
+    },
+    updateUrl: function updateUrl() {
+      history.pushState(null, null, '?page=' + this.currentPage);
+    }
+  }
 });
 
 /***/ }),
@@ -61079,32 +61080,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            notifications: false
-        };
+  data: function data() {
+    return {
+      notifications: false
+    };
+  },
+  mounted: function mounted() {
+    this.fetchNotifications();
+  },
+
+
+  methods: {
+    markAsRead: function markAsRead(notification) {
+      var _this = this;
+
+      axios.delete("/profile/" + window.App.loggedUser.name + "/notifications/" + notification.id).then(function (response) {
+        _this.fetchNotifications();
+      });
     },
-    mounted: function mounted() {
-        this.fetchNotifications();
-    },
+    fetchNotifications: function fetchNotifications() {
+      var _this2 = this;
 
-
-    methods: {
-        markAsRead: function markAsRead(notification) {
-            var _this = this;
-
-            axios.delete("/profile/" + window.App.loggedUser.name + "/notifications/" + notification.id).then(function (response) {
-                _this.fetchNotifications();
-            });
-        },
-        fetchNotifications: function fetchNotifications() {
-            var _this2 = this;
-
-            axios.get("/profile/" + window.App.loggedUser.name + "/notifications").then(function (response) {
-                _this2.notifications = response.data;
-            });
-        }
+      axios.get("/profile/" + window.App.loggedUser.name + "/notifications").then(function (response) {
+        _this2.notifications = response.data;
+      });
     }
+  }
 });
 
 /***/ }),

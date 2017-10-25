@@ -23,5 +23,5 @@ Vue.component('user-notification', require('./components/UserNotifications.vue')
 Vue.component('avatar-form', require('./components/AvatarForm.vue'));
 
 const app = new Vue({
-    el: '#app'
+  el: '#app'
 });
