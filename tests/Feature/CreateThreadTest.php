@@ -198,9 +198,4 @@ class CreateThreadTest extends TestCase
                 ->assertStatus(403);            
         }
     }
-
-    public function testAThreadMayOnlyBeDeletedByThoseWhoHavePermission()
-    {
-        
-    }
 }
