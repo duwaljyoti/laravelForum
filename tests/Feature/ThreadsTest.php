@@ -104,7 +104,7 @@ class ThreadsTest extends TestCase
     public function testAThreadMayBeLocked()
     {
         $this->assertFalse($this->thread->locked);
-        $this->thread->lock();
+        $this->thread->toggleLock();
         $this->assertTrue($this->thread->locked);
     }
 }

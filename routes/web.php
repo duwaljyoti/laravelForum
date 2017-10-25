@@ -32,6 +32,7 @@ Route::delete('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionContro
 Route::get('/threads/{channel}/{thread}/replies', 'ReplyController@index');
 Route::get('/threads/{channel}', 'ThreadController@index');
 Route::post('threads/{thread}/lock', 'LockThreadController@store')->name('thread.lock')->middleware('administrator');
+Route::delete('threads/{thread}/unlock', 'LockThreadController@destroy')->name('thread.open')->middleware('administrator');
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 
 

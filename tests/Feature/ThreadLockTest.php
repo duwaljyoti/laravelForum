@@ -35,11 +35,19 @@ class ThreadLockTest extends TestCase
     {
         $this->signIn();
         $thread = create(Thread::class);
-        $thread->lock();
+        $thread->toggleLock();
         $this->post($thread->path() . '/replies', [
             'body' => 'just a test reply body',
             'user_id' => auth()->id(),
         ])
             ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testAnAdministratorCanUnlockLockedThread()
+    {
+        $this->signIn(factory(User::class)->states('administrator')->create());
+        $thread = create(Thread::class, ['locked' => true]);
+        $this->delete("/threads/{$thread->slug}/unlock");
+        $this->assertFalse($thread->fresh()->locked);
     }
 }

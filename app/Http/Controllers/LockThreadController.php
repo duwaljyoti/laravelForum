@@ -8,6 +8,11 @@ class LockThreadController extends Controller
 {
     public function store(Thread $thread)
     {
-        $thread->lock();
+        $thread->toggleLock();
+    }
+
+    public function destroy(Thread $thread)
+    {
+        $thread->toggleLock();
     }
 }

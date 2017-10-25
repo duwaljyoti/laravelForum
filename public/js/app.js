@@ -57461,6 +57461,9 @@ module.exports = {
     var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
 
     return model[prop] === user.id;
+  },
+  isAdmin: function isAdmin() {
+    return user.name === 'Administrator';
   }
 };
 
@@ -58121,21 +58124,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	components: { Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a, NewReply: __WEBPACK_IMPORTED_MODULE_1__components_NewReply_vue___default.a, Subscription: __WEBPACK_IMPORTED_MODULE_2__components_Subscription_vue___default.a },
+  components: { Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a, NewReply: __WEBPACK_IMPORTED_MODULE_1__components_NewReply_vue___default.a, Subscription: __WEBPACK_IMPORTED_MODULE_2__components_Subscription_vue___default.a },
 
-	props: ['repliesCounter'],
+  props: ['thread'],
 
-	data: function data() {
-		return {
-			replyCount: this.repliesCounter
-		};
-	},
-
-	methods: {
-		aNewFunction: function aNewFunction() {
-			console.log('testing one more time');
-		}
-	}
+  data: function data() {
+    return {
+      replyCount: this.thread.replies_count,
+      locked: this.thread.locked
+    };
+  },
+  methods: {
+    toggleLock: function toggleLock() {
+      this.locked = !this.locked;
+      var method = this.locked ? 'delete' : 'post';
+      var action = this.locked ? 'unlock' : 'lock';
+      axios[method]('/threads/' + this.thread.slug + '/' + action);
+    }
+  },
+  computed: {
+    lockDisplay: function lockDisplay() {
+      return this.locked ? 'Unlock' : 'Lock';
+    }
+  }
 });
 
 /***/ }),
@@ -58209,40 +58220,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	components: { Reply: __WEBPACK_IMPORTED_MODULE_0__Reply_vue___default.a, NewReply: __WEBPACK_IMPORTED_MODULE_1__NewReply_vue___default.a },
+  components: { Reply: __WEBPACK_IMPORTED_MODULE_0__Reply_vue___default.a, NewReply: __WEBPACK_IMPORTED_MODULE_1__NewReply_vue___default.a },
 
-	mixins: [__WEBPACK_IMPORTED_MODULE_2__mixins_collection_js__["a" /* default */]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_2__mixins_collection_js__["a" /* default */]],
 
-	data: function data() {
-		return {
-			dataSet: false
-		};
-	},
+  data: function data() {
+    return {
+      dataSet: false
+    };
+  },
 
 
-	methods: {
-		fetch: function fetch(page) {
-			axios.get(this.url(page)).then(this.refresh).catch(function (exception) {});
-		},
-		url: function url(page) {
-			if (!page) {
-				page = Object(__WEBPACK_IMPORTED_MODULE_3__mixins_utils_index_js__["a" /* getParameterByName */])('page') ? Object(__WEBPACK_IMPORTED_MODULE_3__mixins_utils_index_js__["a" /* getParameterByName */])('page') : 1;
-			}
+  methods: {
+    fetch: function fetch(page) {
+      axios.get(this.url(page)).then(this.refresh).catch(function (exception) {});
+    },
+    url: function url(page) {
+      if (!page) {
+        page = Object(__WEBPACK_IMPORTED_MODULE_3__mixins_utils_index_js__["a" /* getParameterByName */])('page') ? Object(__WEBPACK_IMPORTED_MODULE_3__mixins_utils_index_js__["a" /* getParameterByName */])('page') : 1;
+      }
 
-			return location.pathname + '/replies?page=' + page;
-		},
-		refresh: function refresh(_ref) {
-			var data = _ref.data;
+      return location.pathname + '/replies?page=' + page;
+    },
+    refresh: function refresh(_ref) {
+      var data = _ref.data;
 
-			this.dataSet = data;
-			this.items = data.data;
-			window.scroll(0, 0);
-		}
-	},
+      this.dataSet = data;
+      this.items = data.data;
+      window.scroll(0, 0);
+    }
+  },
 
-	created: function created() {
-		this.fetch();
-	}
+  created: function created() {
+    this.fetch();
+  }
 });
 
 /***/ }),
@@ -60730,11 +60741,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "pageUpdated": _vm.fetch
     }
-  }), _vm._v(" "), _c('new-reply', {
+  }), _vm._v(" "), (!_vm.$parent.locked) ? _c('new-reply', {
     on: {
       "created": _vm.add
     }
-  })], 2)
+  }) : _c('span', [_vm._v("This thread is locked by Admin.")])], 2)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
