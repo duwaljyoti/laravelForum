@@ -12,7 +12,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    @yield('head-style')
 
     <!-- Scripts -->
     <script>
@@ -31,6 +30,9 @@
         .ml-a { margin-left: auto; }
         [v-cloak] { display:none; }
     </style>
+
+    @yield('head-style')
+
 </head>
 <body style=''>
     <div id="app">

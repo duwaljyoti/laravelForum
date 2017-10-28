@@ -35,4 +35,8 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'google_recaptcha' => [
+        'secret' => "6LcEHTYUAAAAAIRlDXcM6a0tIl48pA6FFGIJq1Oc"
+    ],
+
 ];
