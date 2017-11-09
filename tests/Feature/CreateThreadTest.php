@@ -149,7 +149,7 @@ class CreateThreadTest extends TestCase
         return $this->post('threads', $thread->toArray());
     }
 
-    public function testAnAuthorizedUserDeleteThread()
+    public function testAnOwnerUserDeleteThread()
     {
         $this->signIn();
 

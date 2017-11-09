@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Channel;
 use App\Filters\ThreadFilters;
@@ -14,7 +15,7 @@ class ThreadController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->only(['store', 'create', 'destroy']);
-        $this->middleware('administrator')->only(['update']);
+//        $this->middleware('administrator')->only(['update']);
     }
 
     /**
@@ -85,7 +86,7 @@ class ThreadController extends Controller
         $response = Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify',[
            'secret' => config('services.google_recaptcha.secret'),
            'response' => $request->input('g-recaptcha-response'),
-           'remoteip' => $_SERVER['REMOTE_ADDR']
+           'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
         ]);
 
         if(!$response->json()['success']) {
@@ -142,23 +143,31 @@ class ThreadController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @return Thread
      */
-    public function update($channel, Thread $thread)
+    public function update($channel, Thread $thread, Request $request)
     {
+        $this->authorize('update', $thread);
 
+        $threadData = $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $thread->update($threadData);
+
+        return $thread;
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Thread  $thread
+[/w     * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
     public function destroy($channel, Thread $thread)
     {
         // if($thread->user_id != auth()->id()) {
-        //     abort(403, 'You do not have correct priviliges to perform the action');
+        //     abort(403, 'You do not have correct privilege to perform the action');
         // }
 
         $this->authorize('update', $thread);
