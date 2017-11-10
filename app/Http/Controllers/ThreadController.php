@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\Recaptcha;
 use App\Thread;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Channel;
 use App\Filters\ThreadFilters;
-use Zttp\Zttp;
 
 class ThreadController extends Controller
 {
@@ -72,26 +71,18 @@ class ThreadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     * @param Recaptcha $reCaptcha
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Recaptcha $reCaptcha)
     {
         $this->validate($request, [
             'title' => 'required|spamFree',
             'body' => 'required|spamFree',
-            'channel_id' => 'required|exists:channels,id'
+            'channel_id' => 'required|exists:channels,id',
+            'g-recaptcha-response' => ['required', $reCaptcha]
         ]);
-
-        $response = Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify',[
-           'secret' => config('services.google_recaptcha.secret'),
-           'response' => $request->input('g-recaptcha-response'),
-           'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
-        ]);
-
-        if(!$response->json()['success']) {
-            abort(422, 'Recaptcha Failed!');
-        }
 
         $thread = Thread::create([
             'user_id' => auth()->id(),

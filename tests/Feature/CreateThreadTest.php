@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Rules\Recaptcha;
 use App\Thread;
 use App\User;
 use Tests\TestCase;
@@ -11,6 +12,22 @@ use App\Activity;
 class CreateThreadTest extends TestCase
 {
 	use DatabaseMigrations;
+
+	public function setUp()
+    {
+        parent::setUp();
+
+        // calling the passes method of the Recaptcha class and
+        // assuming to be receiving true every time.unless intentionally removed.
+
+        $this->app->singleton(Recaptcha::class, function() {
+            $m = \Mockery::mock(Recaptcha::class);
+
+            $m->shouldReceive('passes')->andReturn(true);
+
+            return $m;
+        });
+    }
 
     public function testAnAuthenticatedUserShouldBeRedirectedIfTriedToAccessTheThreadCreateForm()
     {
@@ -80,7 +97,7 @@ class CreateThreadTest extends TestCase
     {
         $user = create(User::class, ['confirmed' => 1]);
         $this->signIn($user);
-        $thread = make(Thread::class);
+        $thread = make(Thread::class, ['g-recaptcha-response' => 'test key']);
 
         $response = $this->post('/threads', $thread->toArray());
         $this->assertDatabaseHas('threads', ['title' => $thread->title]);
@@ -104,6 +121,7 @@ class CreateThreadTest extends TestCase
         $thread = create(Thread::class, ['title' => 'Hello World']);
         $this->assertEquals($thread->fresh()->slug, 'hello-world-3');
 
+        $thread['g-recaptcha-response'] = 'test-key';
         $this->post(route('threads'), $thread->toArray());
         $this->assertTrue(Thread::whereSlug('hello-world-4')->exists());
 
@@ -116,6 +134,7 @@ class CreateThreadTest extends TestCase
         $this->signIn();
 
         $thread = create(Thread::class, ['title' => 'hello world 24'])->toArray();
+        $thread['g-recaptcha-response'] = 'test-key';
 
         $this->assertTrue(Thread::whereSlug('hello-world-24-1')->exists());
         $this->post(route('threads'), $thread);
@@ -197,5 +216,13 @@ class CreateThreadTest extends TestCase
             $this->delete($thread->path())
                 ->assertStatus(403);            
         }
+    }
+
+    public function testARecaptchaErrorWillAriseInCaseOfFalseRecaptchaValidation()
+    {
+        unset(app()[Recaptcha::class]);
+
+        $this->publishThread(['g-recaptcha-response' => 'test-key'])
+            ->assertSessionHasErrors('g-recaptcha-response');
     }
 }
