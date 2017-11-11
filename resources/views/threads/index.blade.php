@@ -9,6 +9,20 @@
             <div class="col-md-4">
                 <div class="panel panel-heading">
                     <div class="panel-heading">
+                        Search
+                    </div>
+                    <div class="panel-body">
+                        <form action="/threads/search">
+                            <div class="form-group">
+                                <input name="query" class="form-control" placeholder="Search..">
+                            </div>
+                            <button type="submit" class="btn-primary">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="panel panel-heading">
+                    <div class="panel-heading">
                         Trending Threads
                     </div>
                     <div class="panel-body">

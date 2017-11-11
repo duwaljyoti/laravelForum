@@ -44,9 +44,9 @@
         <div class="panel-body" v-text="body">
         </div>
         <div class="panel-footer level" v-show="canUpdate">
-        <div class="panel-footer level" v-show="canUpdate">
-            <button class="btn-xs" @click="editing=true">Edit</button>
+            <div class="panel-footer level" v-show="canUpdate">
+                <button class="btn-xs" @click="editing=true">Edit</button>
+            </div>
         </div>
     </div>
 </div>
-

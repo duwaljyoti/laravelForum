@@ -26,6 +26,7 @@ Route::get('/threads/create', [
 ]);
 Route::post('/threads', 'ThreadController@store')->middleware('isConfirmed');
 Route::get('/threads/{channel}/{thread}', 'ThreadController@show');
+Route::get('/threads/search', 'SearchController@show');
 Route::put('/threads/{channel}/{thread}', 'ThreadController@update');
 Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store');
 Route::post('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionController@subscribe')->middleware('auth');
