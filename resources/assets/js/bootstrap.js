@@ -34,7 +34,8 @@ Vue.prototype.authorize = function(...params) {
   let user = window.App.loggedUser;
   if (! user) return false;
 
-  return (typeof(params[0]) === 'string') ? authorizations[params[0]](params[1]) : params[0](user);
+  return (typeof(params[0]) === 'string')
+    ? authorizations[params[0]](params[1]) : params[0](user);
 
 };
 

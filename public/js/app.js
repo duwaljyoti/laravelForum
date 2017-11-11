@@ -58126,12 +58126,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: { Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a, NewReply: __WEBPACK_IMPORTED_MODULE_1__components_NewReply_vue___default.a, Subscription: __WEBPACK_IMPORTED_MODULE_2__components_Subscription_vue___default.a },
 
-  props: ['thread'],
+  props: ['thread', 'path'],
 
   data: function data() {
     return {
       replyCount: this.thread.replies_count,
-      locked: this.thread.locked
+      locked: this.thread.locked,
+      editing: false,
+      title: this.thread.title,
+      body: this.thread.body,
+      form: {}
     };
   },
   methods: {
@@ -58140,12 +58144,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var method = this.locked ? 'delete' : 'post';
       var action = this.locked ? 'unlock' : 'lock';
       axios[method]('/threads/' + this.thread.slug + '/' + action);
+    },
+    update: function update() {
+      var _this = this;
+
+      axios.put(this.path, {
+        title: this.form.title,
+        body: this.form.body
+      }).then(function () {
+        _this.editing = false;
+        _this.title = _this.form.title;
+        _this.body = _this.form.body;
+        flash('Your thread has been successfully updated.');
+      }).catch(function (e) {
+        console.log(e);
+      });
+    },
+    resetForm: function resetForm() {
+      this.form = {
+        title: this.thread.title,
+        body: this.thread.body
+      };
+      this.editing = false;
     }
   },
   computed: {
     lockDisplay: function lockDisplay() {
       return this.locked ? 'Unlock' : 'Lock';
+    },
+    canUpdate: function canUpdate() {
+      return this.authorize('owns', this.thread);
     }
+  },
+  mounted: function mounted() {
+    this.resetForm();
   }
 });
 
